@@ -3,6 +3,7 @@
 #include "chessPiece.h"
 #include "textDisplay.h"
 #include <memory>
+#include <string>
 
 
 const int BOARD_DIMENSION = 8;
@@ -22,10 +23,12 @@ public:
     
     ChessPiece getPiece(int row, int column);
 
-    void init();                                // initialize the chess board with standard chess pieces
-    void addPiece(ChessPiece &piece);           // add piece to the board
-    void removePiece(int row, int column);      // remove piece from the board (if not Empty)
-    bool kingIsUnderAttack(ChessColour colour); // return whether a white/black king is in check
-    virtual void chessMove() = 0;               // make a move
+    void init();                                                   // initialize the chess board with standard chess pieces
+    void addPiece(char pieceType, std::string position);           // add piece to the board
+    void removePiece(std::string position);                        // remove piece from the board (if not Empty)
+    bool kingIsUnderAttack(ChessColour colour);                    // return whether a white/black king is in check
+    virtual void chessMove();                                      // make a move
+    bool isValidBoard();                                           // return whether the setup board is valid
+    void emptyBoard();                                             // make the board empty (all Empty pieces)
 };
 #endif
