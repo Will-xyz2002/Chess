@@ -12,7 +12,7 @@ class ChessPiece {
     char display;
     bool isMoved = false;
     std::vector<Observer*> observers;
-    virtual std::vector<ChessSquare> generatePath(ChessPiece &dest) = 0;
+    virtual std::vector<ChessSquare> generatePath(ChessPiece &dest);
 
 
 public:
@@ -37,8 +37,8 @@ public:
     void setMoved(bool isMoved);
 
     // other methods
-    virtual bool isValidMove(ChessPiece &dest) = 0; // check move validity (movement)
-    virtual bool isPathClear(ChessPiece &dest) = 0; // check move validity (no obstacle)
+    virtual bool isValidMove(ChessPiece &dest); // check move validity (movement)
+    virtual bool isPathClear(ChessPiece &dest); // check move validity (no obstacle)
     void attach(Observer *o); // add observers
 };
 #endif
