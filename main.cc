@@ -12,13 +12,13 @@ using namespace std;
 enum class Command {GAME, MOVE, RESIGN, SETUP, ADD_PIECE, REMOVE_PIECE, CHANGE_PLAYER, DONE, NONE};
 
 Command convertCommand(string command) {
-    if (command == "game") return Command::GAME;
-    if (command == "move") return Command::MOVE;
-    if (command == "resign") return Command::RESIGN;
-    if (command == "setup") return Command::SETUP;
+    if (command == "game" || command == "g") return Command::GAME;
+    if (command == "move" || command == "m") return Command::MOVE;
+    if (command == "resign" || command == "r") return Command::RESIGN;
+    if (command == "setup" || command == "s") return Command::SETUP;
     if (command == "+") return Command::ADD_PIECE;
     if (command == "-") return Command::REMOVE_PIECE;
-    if (command == "done") return Command::DONE;
+    if (command == "done" || command == "d") return Command::DONE;
     if (command == "=") return Command::CHANGE_PLAYER;
     return Command::NONE;
 }
