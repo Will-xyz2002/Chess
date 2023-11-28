@@ -11,12 +11,13 @@ class ChessPiece {
     ChessSquare coordinate;
     char display;
     bool isMoved = false;
+    bool empty;
     std::vector<Observer*> observers;
     virtual std::vector<ChessSquare> generatePath(ChessPiece &dest);
 
 
 public:
-    ChessPiece(ChessColour colour, ChessSquare coords);
+    ChessPiece(ChessColour colour, ChessSquare coords, bool empty);
     ~ChessPiece();
     ChessPiece(const ChessPiece &other);
     ChessPiece(ChessPiece &&other);
