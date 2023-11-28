@@ -27,6 +27,8 @@ public:
     void addPiece(char pieceType, std::string position);           // add piece to the board
     void removePiece(std::string position);                        // remove piece from the board (if not Empty)
     bool kingIsUnderAttack(ChessColour colour);                    // return whether a white/black king is in check
+    bool isValidMove(ChessPiece &initial, ChessPiece &dest);       // determine whether a move is valid (movement)
+    bool isValidPath(ChessPiece &initial, ChessPiece &dest);       // determine whether a move is valid (no obstacle)
     virtual void chessMove();                                      // make a move
     bool isValidBoard();                                           // return whether the setup board is valid
     void emptyBoard();                                             // make the board empty (all Empty pieces)
