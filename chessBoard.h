@@ -33,4 +33,6 @@ public:
     bool isValidBoard();                                           // return whether the setup board is valid
     void emptyBoard();                                             // make the board empty (all Empty pieces)
 };
+
+std::ostream &operator<<(std::ostream &out, ChessBoard board);     // output the board
 #endif
