@@ -5,7 +5,6 @@ ChessSquare::ChessSquare (int r, int c, bool empty)
 
 int ChessSquare::getRow() { return row; }
 int ChessSquare::getColumn() { return column; }
-void ChessSquare::setCoords(const int row, const int column) {
-    row = row;
-    column = column;
-}
+void ChessSquare::setCoords(const int row, const int column)
+    : row{row}, column{column} {}
+    
