@@ -2,7 +2,7 @@
 CS246 project
 ## Command
 ```
-game or g (human or (computer[1-4] or c1 c2 c3 c4)) (human or (computer[1-4] or c1 c2 c3 c4))
+game(g) (human(h) or (computer[1-4](c1,c2,c3,c4))) (human(h) or (computer[1-4](c1,c2,c3,c4)))
 ```
 ```
 resign or r

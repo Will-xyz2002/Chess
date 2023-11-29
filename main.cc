@@ -25,7 +25,7 @@ Command convertCommand(string command) {
 
 
 bool assignPlayer(string p, unique_ptr<Player> &player, ChessColour colour) {
-    if (p == "human") {
+    if (p == "human" || p == "h") {
         player = make_unique<HumanPlayer>(colour);
         return true;
     }
