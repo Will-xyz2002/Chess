@@ -10,4 +10,5 @@ public:
     int getColumn();
     void setCoords(const int row, const int column);
 };
+
 #endif

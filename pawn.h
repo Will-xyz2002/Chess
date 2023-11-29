@@ -1,13 +1,16 @@
 #ifndef PAWN_H
 #define PAWN_H
+#include <vector>
 #include "chessPiece.h"
+
+using namespace std;
 
 class Pawn: public ChessPiece {
     bool enPassant = false;
-    std::vector<ChessSquare> generatePath(ChessPiece &dest) override;
+
 public:
     bool isValidMove(ChessPiece &dest) override;
-    bool isPathClear(ChessPiece &dest) override;
+    vector<ChessSquare> generatePath(ChessPiece &dest) override;
     void promotion();
 };
 
