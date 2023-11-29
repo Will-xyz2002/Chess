@@ -9,6 +9,7 @@
 class ChessGame {
     ChessBoard board;
     bool whiteTurn = true;
+    bool isWhiteWin = false;
     bool isWon = false;
     Player p1;
     Player p2;
