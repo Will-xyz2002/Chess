@@ -29,15 +29,15 @@ bool assignPlayer(string p, unique_ptr<Player> &player, ChessColour colour) {
         player = make_unique<HumanPlayer>(colour);
         return true;
     }
-    else if (p == "computer[1]") {
+    else if (p == "computer[1]" || p == "c1") {
         player = make_unique<ComputerPlayer>(colour, 1);
         return true;
     }
-    else if (p == "computer[2]") {
+    else if (p == "computer[2]" || p == "c2") {
         player = make_unique<ComputerPlayer>(colour, 2);
         return true;
     }
-    else if (p == "computer[3]") {
+    else if (p == "computer[3]" || p == "c3") {
         player = make_unique<ComputerPlayer>(colour, 3);
         return true;
     }
