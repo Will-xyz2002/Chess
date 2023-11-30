@@ -7,8 +7,10 @@
 using namespace std;
 
 enum class ChessColour {White, Black, None};
+enum class ChessType {Pawn, King, Bishop, Knight, Queen, Rook, Empty};
 
 class ChessPiece {
+    const ChessType type;
     ChessColour colour;
     ChessSquare coordinate;
     char display;
@@ -17,7 +19,7 @@ class ChessPiece {
     vector<Observer*> observers;
 
 public:
-    ChessPiece(ChessColour colour, ChessSquare coords, bool empty);
+    ChessPiece(ChessType type, ChessColour colour, ChessSquare coords, bool empty);
     ~ChessPiece();
     ChessPiece(const ChessPiece &other);
     ChessPiece(ChessPiece &&other);
@@ -27,6 +29,7 @@ public:
     // accessors
     ChessColour getColour();
     ChessSquare getCoords();
+    ChessType getType();
     char getDisplay();
     bool isEmpty();
     bool hasMoved();
@@ -41,7 +44,7 @@ public:
     virtual vector<ChessSquare> generatePath(ChessPiece &dest);
     virtual bool isValidMove(ChessPiece &dest); // check move validity (movement)
     int abs(int p); // returns the absolute value of path p (distance)
-    void attach(Observer *o); // add observers
+    void attach(Observer &o); // add observers
 };
 
 #endif

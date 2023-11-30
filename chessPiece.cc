@@ -3,8 +3,8 @@
 
 using namespace std;
 
-ChessPiece::ChessPiece(ChessColour colour, ChessSquare coords, bool empty)
-    : colour{colour}, coordinate{coords}, empty{empty} {}
+ChessPiece::ChessPiece(ChessType type, ChessColour colour, ChessSquare coords, bool empty): 
+                        type{type}, colour{colour}, coordinate{coords}, empty{empty} {}
 
 ChessPiece::~ChessPiece() {}
 
@@ -53,22 +53,28 @@ ChessPiece &ChessPiece::operator=(ChessPiece &&other) {
 }
 
 // accessors
-ChessColour getColour() { return colour; }
-ChessSquare getCoords() { return coordinate; }
-char getDisplay() { return display; }
-bool isEmpty() { return empty; }
-bool hasMoved() { /* fill in */ }
+ChessColour ChessPiece::getColour() { return colour; }
+ChessSquare ChessPiece::getCoords() { return coordinate; }
+char ChessPiece::getDisplay() { return display; }
+bool ChessPiece::isEmpty() { return empty; }
+bool ChessPiece::hasMoved() { return isMoved; }
 
 // settors
-void setColour(ChessColour colour) { colour = colour; }
-void setCoords(int row, int column) {
-    coordinate.row = row;
-    coordinate.column = column;
+void ChessPiece::setColour(ChessColour colour) { colour = colour; }
+void ChessPiece::setCoords(int row, int column) {
+    coordinate.setCoords(row, column);
 }
-void setEmpty(bool empty) { empty = empty; }
-void setMoved(bool isMoved) { isMoved = isMoved; }
+
+
+void ChessPiece::setEmpty(bool empty) { this->empty = empty; }
+void ChessPiece::setMoved(bool isMoved) { this->isMoved = isMoved; }
 
 int abs(int p) {
     if(p >= 0) return p;
     else return -p;
 }
+
+void ChessPiece::attach(Observer &o) {
+    observers.emplace_back(o);
+}
+

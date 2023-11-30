@@ -13,6 +13,7 @@ public:
     void notify(ChessPiece &piece) override;
     void displayTurn(ChessColour colour);
     void displayInvalidMove();
+    void displayDuplicateKing(ChessColour colour);
 };
 
 #endif
