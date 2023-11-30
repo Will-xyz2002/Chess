@@ -1,7 +1,12 @@
 #include <vector>
 #include "bishop.h"
 
-bool Bishop::isValidMove(ChessPiece &dest) override {
+Bishop::Bishop(ChessColour colour, ChessSquare coords): ChessPiece{ChessType::Bishop, colour, coords, false} {
+    if (colour == ChessColour::White) setDisplay('B');
+    else if (colour == ChessColour::Black) setDisplay('b');
+}
+
+bool Bishop::isValidMove(ChessPiece &dest) {
     int srcRow = this->getCoords().getRow();
     int srcColumn = this->getCoords().getColumn();
     int destRow = dest.getCoords().getRow();
@@ -22,7 +27,7 @@ bool Bishop::isValidMove(ChessPiece &dest) override {
     return false;
 }
 
-vector<ChessSquare> Bishop::generatePath(ChessPiece &dest) override {
+vector<ChessSquare> Bishop::generatePath(ChessPiece &dest) {
     vector<ChessSquare> path;
     int srcRow = this->getCoords().getRow();
     int srcColumn = this->getCoords().getColumn();

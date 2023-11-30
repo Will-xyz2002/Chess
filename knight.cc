@@ -1,7 +1,12 @@
 #include <vector>
 #include "knight.h"
 
-bool Knight::isValidMove(ChessPiece &dest) override {
+Knight::Knight(ChessColour colour, ChessSquare coords): ChessPiece{ChessType::Knight, colour, coords, false} {
+    if (colour == ChessColour::White) setDisplay('N');
+    else if (colour == ChessColour::Black) setDisplay('n');
+}
+
+bool Knight::isValidMove(ChessPiece &dest) {
     int srcRow = this->getCoords().getRow();
     int srcColumn = this->getCoords().getColumn();
     int destRow = dest.getCoords().getRow();
@@ -23,7 +28,7 @@ bool Knight::isValidMove(ChessPiece &dest) override {
     return false;
 }
 
-vector<ChessSquare> Knight::generatePath(ChessPiece &dest) override {
+vector<ChessSquare> Knight::generatePath(ChessPiece &dest) {
     vector<ChessSquare> path;
     return path;
 }

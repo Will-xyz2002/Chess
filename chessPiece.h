@@ -36,6 +36,7 @@ public:
 
     // settors
     void setColour(ChessColour colour);
+    void setDisplay(char display);
     void setCoords(int row, int column);
     void setEmpty(bool empty);
     void setMoved(bool isMoved);

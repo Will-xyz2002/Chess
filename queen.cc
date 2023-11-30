@@ -1,7 +1,12 @@
 #include <vector>
 #include "queen.h"
 
-bool Queen::isValidMove(ChessPiece &dest) override {
+Queen::Queen(ChessColour colour, ChessSquare coords): ChessPiece{ChessType::Queen, colour, coords, false} {
+    if (colour == ChessColour::White) setDisplay('Q');
+    else if (colour == ChessColour::Black) setDisplay('q');
+}
+
+bool Queen::isValidMove(ChessPiece &dest) {
     int srcRow = this->getCoords().getRow();
     int srcColumn = this->getCoords().getColumn();
     int destRow = dest.getCoords().getRow();
@@ -24,7 +29,7 @@ bool Queen::isValidMove(ChessPiece &dest) override {
     return false;
 }
 
-vector<ChessSquare> Queen::generatePath(ChessPiece &dest) override {
+vector<ChessSquare> Queen::generatePath(ChessPiece &dest) {
     vector<ChessSquare> path;
     int srcRow = this->getCoords().getRow();
     int srcColumn = this->getCoords().getColumn();

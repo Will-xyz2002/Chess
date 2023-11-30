@@ -1,7 +1,12 @@
 #include <vector>
 #include "rook.h"
 
-bool Rook::isValidMove(ChessPiece &dest) override {
+Rook::Rook(ChessColour colour, ChessSquare coords): ChessPiece{ChessType::Rook, colour, coords, false} {
+    if (colour == ChessColour::White) setDisplay('R');
+    else if (colour == ChessColour::Black) setDisplay('r');
+}
+
+bool Rook::isValidMove(ChessPiece &dest) {
     int srcRow = this->getCoords().getRow();
     int srcColumn = this->getCoords().getColumn();
     int destRow = dest.getCoords().getRow();
@@ -20,7 +25,7 @@ bool Rook::isValidMove(ChessPiece &dest) override {
     return false;
 }
 
-vector<ChessSquare> Rook::generatePath(ChessPiece &dest) override {
+vector<ChessSquare> Rook::generatePath(ChessPiece &dest) {
     vector<ChessSquare> path;
     int srcRow = this->getCoords().getRow();
     int srcColumn = this->getCoords().getColumn();

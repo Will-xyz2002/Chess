@@ -1,7 +1,12 @@
 #include <vector>
 #include "king.h"
 
-bool King::isValidMove(ChessPiece &dest) override {
+King::King(ChessColour colour, ChessSquare coords): ChessPiece{ChessType::King, colour, coords, false} {
+    if (colour == ChessColour::White) setDisplay('K');
+    else if (colour == ChessColour::Black) setDisplay('k');
+}
+
+bool King::isValidMove(ChessPiece &dest) {
     int srcRow = this->getCoords().getRow();
     int srcColumn = this->getCoords().getColumn();
     int destRow = dest.getCoords().getRow();
@@ -23,7 +28,7 @@ bool King::isValidMove(ChessPiece &dest) override {
     else return true; // valid move
 }
 
-vector<ChessSquare> King::generatePath(ChessPiece &dest) override {
+vector<ChessSquare> King::generatePath(ChessPiece &dest) {
     vector<ChessSquare> path;
     return path;
 }
