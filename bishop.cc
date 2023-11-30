@@ -6,17 +6,17 @@ bool Bishop::isValidMove(ChessPiece &dest) override {
     int srcColumn = this->getCoords().getColumn();
     int destRow = dest.getCoords().getRow();
     int destColumn = dest.getCoords().getColumn();
-    int rowMove = ChessPiece::abs(destRow - srcRow); // change by vertical move
-    int colMove = ChessPiece::abs(destColumn - srcColumn); // change by horizontal move
+    int rowMove = ChessPiece::abs(destRow - srcRow); // vertical displacement
+    int colMove = ChessPiece::abs(destColumn - srcColumn); // horizontal displacement
 
-    // piece is out of board range
+    // Check if piece is out of board range
     if (!(0 <= srcRow && srcRow <= 7 && 0 <= srcColumn && srcColumn <= 7 &&
           0 <= destRow && destRow <= 7 && 0 <= destColumn && destColumn <= 7)) {
         return false;
     }
-    // piece is not moved
+    // Check if piece has not moved
     if(srcRow == destRow && srcColumn == destColumn) return false;
-    // rowMove == colMove to have diagonal movement
+    // Check if piece has diagonal move
     if (rowMove == colMove) return true;
     // invalid move
     return false;
@@ -30,10 +30,10 @@ vector<ChessSquare> Bishop::generatePath(ChessPiece &dest) override {
     int destColumn = dest.getCoords().getColumn();
 
     // vertical Direction: 
-    // if srcRow < destRow is true, Bishop moved up and down otherwise
+    // if srcRow < destRow is true, bishop moved up and down otherwise
     int rowDict = srcRow < destRow ? 1 : -1;
     // horizontal Direction:
-    // if srcColumn < destColumn is true, Bishop moved right and left otherwise
+    // if srcColumn < destColumn is true, bishop moved right and left otherwise
     int colDict = srcColumn < destColumn ? 1 : -1;
 
     // diagonal move: row and column get one diagonal step closer to destination
