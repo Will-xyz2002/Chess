@@ -7,17 +7,17 @@ bool Rook::isValidMove(ChessPiece &dest) override {
     int destRow = dest.getCoords().getRow();
     int destColumn = dest.getCoords().getColumn();
 
-    // piece is out of board range
+    // Check if piece is out of board range
     if (!(0 <= srcRow && srcRow <= 7 && 0 <= srcColumn && srcColumn <= 7 &&
           0 <= destRow && destRow <= 7 && 0 <= destColumn && destColumn <= 7)) {
         return false;
     }
-    // piece is not moved
+    // Check if piece has not moved
     if(srcRow == destRow && srcColumn == destColumn) return false;
-    // either row or column must be the same, but not both
-    if (srcRow != destRow && srcColumn != destColumn) return false;
+    // Check if piece has straight move
+    if (srcRow == destRow || srcColumn == destColumn) return true;
     // valid move
-    return true;
+    return false;
 }
 
 vector<ChessSquare> Rook::generatePath(ChessPiece &dest) override {
