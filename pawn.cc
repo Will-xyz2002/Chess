@@ -41,7 +41,8 @@ vector<ChessSquare> Pawn::generatePath(ChessPiece &dest) override {
     // vertical change (rowMove forwarded)
     int rowMove = this->getColour() == ChessColour::White ? srcRow - destRow : destRow - srcRow;
 
-    if(srcColumn == destColumn && rowMove == 2) { // enpassant: 2 move forward
+    // enpassant: 2 move forward
+    if(srcColumn == destColumn && rowMove == 2) {
         int midRow = this->getColour() == ChessColour::White ? srcRow - 1 : srcRow + 1;
         path.emplace_back(midRow, srcColumn)
     }

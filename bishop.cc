@@ -30,10 +30,10 @@ vector<ChessSquare> Bishop::generatePath(ChessPiece &dest) override {
     int destColumn = dest.getCoords().getColumn();
 
     // vertical Direction: 
-    // if srcRow < destRow is true, Bishop moved up and down otherwise
+    // if srcRow < destRow is true, bishop moved up and down otherwise
     int rowDict = srcRow < destRow ? 1 : -1;
     // horizontal Direction:
-    // if srcColumn < destColumn is true, Bishop moved right and left otherwise
+    // if srcColumn < destColumn is true, bishop moved right and left otherwise
     int colDict = srcColumn < destColumn ? 1 : -1;
 
     // diagonal move: row and column get one diagonal step closer to destination
