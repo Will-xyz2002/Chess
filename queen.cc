@@ -6,8 +6,8 @@ bool Queen::isValidMove(ChessPiece &dest) override {
     int srcColumn = this->getCoords().getColumn();
     int destRow = dest.getCoords().getRow();
     int destColumn = dest.getCoords().getColumn();
-    int rowMove = ChessPiece::abs(destRow - srcRow); // vertical change
-    int colMove = ChessPiece::abs(destColumn - srcColumn); // horizontal change
+    int rowMove = ChessPiece::abs(destRow - srcRow); // vertical displacement
+    int colMove = ChessPiece::abs(destColumn - srcColumn); // horizontal displacement
 
     // Check if piece is out of board range
     if (!(0 <= srcRow && srcRow <= 7 && 0 <= srcColumn && srcColumn <= 7 &&

@@ -8,9 +8,9 @@ bool Pawn::isValidMove(ChessPiece &dest) override {
     int srcColumn = this->getCoords().getColumn();
     int destRow = dest.getCoords().getRow();
     int destColumn = dest.getCoords().getColumn();
-    // vertical change (rowMove forwarded)
+    // vertical displacement (rowMove forwarded)
     int rowMove = this->getColour() == ChessColour::White ? srcRow - destRow : destRow - srcRow;
-    int colMove = ChessPiece::abs(destColumn - srcColumn); // horizontal change
+    int colMove = ChessPiece::abs(destColumn - srcColumn); // horizontal displacement
 
     // Check if piece is out of board range
     if (!(0 <= srcRow && srcRow <= 7 && 0 <= srcColumn && srcColumn <= 7 &&
