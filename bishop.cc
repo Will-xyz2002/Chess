@@ -6,17 +6,17 @@ bool Bishop::isValidMove(ChessPiece &dest) override {
     int srcColumn = this->getCoords().getColumn();
     int destRow = dest.getCoords().getRow();
     int destColumn = dest.getCoords().getColumn();
-    int rowMove = ChessPiece::abs(destRow - srcRow); // change by vertical move
-    int colMove = ChessPiece::abs(destColumn - srcColumn); // change by horizontal move
+    int rowMove = ChessPiece::abs(destRow - srcRow); // vertical change
+    int colMove = ChessPiece::abs(destColumn - srcColumn); // horizontal change
 
-    // piece is out of board range
+    // Check if piece is out of board range
     if (!(0 <= srcRow && srcRow <= 7 && 0 <= srcColumn && srcColumn <= 7 &&
           0 <= destRow && destRow <= 7 && 0 <= destColumn && destColumn <= 7)) {
         return false;
     }
-    // piece is not moved
+    // Check if piece has not moved
     if(srcRow == destRow && srcColumn == destColumn) return false;
-    // rowMove == colMove to have diagonal movement
+    // Check if piece has diagonal move
     if (rowMove == colMove) return true;
     // invalid move
     return false;
