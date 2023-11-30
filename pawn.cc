@@ -3,7 +3,7 @@
 
 bool Pawn::isEnPassanted() { return enPassanted; }
 
-bool Pawn::isValidMove(ChessPiece &dest) override {
+bool Pawn::isValidMove(ChessPiece &dest) {
     int srcRow = this->getCoords().getRow();
     int srcColumn = this->getCoords().getColumn();
     int destRow = dest.getCoords().getRow();
@@ -32,7 +32,7 @@ bool Pawn::isValidMove(ChessPiece &dest) override {
     return false;
 }
 
-vector<ChessSquare> Pawn::generatePath(ChessPiece &dest) override {
+vector<ChessSquare> Pawn::generatePath(ChessPiece &dest) {
     vector<ChessSquare> path;
     int srcRow = this->getCoords().getRow();
     int srcColumn = this->getCoords().getColumn();
@@ -44,7 +44,7 @@ vector<ChessSquare> Pawn::generatePath(ChessPiece &dest) override {
     // enpassant: 2 move forward
     if(srcColumn == destColumn && rowMove == 2) {
         int midRow = this->getColour() == ChessColour::White ? srcRow - 1 : srcRow + 1;
-        path.emplace_back(midRow, srcColumn)
+        path.emplace_back(midRow, srcColumn);
     }
     
     return path;

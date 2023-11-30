@@ -10,7 +10,7 @@ enum class ChessColour {White, Black, None};
 enum class ChessType {Pawn, King, Bishop, Knight, Queen, Rook, Empty};
 
 class ChessPiece {
-    const ChessType type;
+    ChessType type;
     ChessColour colour;
     ChessSquare coordinate;
     char display;

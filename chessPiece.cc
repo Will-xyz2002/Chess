@@ -10,14 +10,14 @@ ChessPiece::~ChessPiece() {}
 
 // copy ctor
 ChessPiece::ChessPiece(const ChessPiece &other)
-    : colour(other.colour), coordinate(other.coordinate), display(other.display),
+    : type{other.type}, colour(other.colour), coordinate(other.coordinate), display(other.display),
       isMoved(other.isMoved), empty(other.empty), observers(other.observers) {
     // deep copy?
 }
 
 // move ctor
 ChessPiece::ChessPiece(ChessPiece &&other)
-    : colour(other.colour), coordinate(move(other.coordinate)), display(other.display),
+    : type{other.type}, colour(other.colour), coordinate(move(other.coordinate)), display(other.display),
       isMoved(other.isMoved), empty(other.empty), observers(move(other.observers)) {
     // Reset the members of 'other' ?
 }
@@ -26,6 +26,7 @@ ChessPiece::ChessPiece(ChessPiece &&other)
 ChessPiece &ChessPiece::operator=(const ChessPiece &other) {
     if (this != &other) {
         // Copy all members
+        type = other.type;
         colour = other.colour;
         coordinate = other.coordinate;
         display = other.display;
@@ -40,6 +41,7 @@ ChessPiece &ChessPiece::operator=(const ChessPiece &other) {
 ChessPiece &ChessPiece::operator=(ChessPiece &&other) {
     if (this != &other) {
         // Move all members
+        type = other.type;
         colour = other.colour;
         coordinate = move(other.coordinate);
         display = other.display;
