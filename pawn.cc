@@ -25,7 +25,7 @@ bool Pawn::isValidMove(ChessPiece &dest) override {
         else if(colMove == 1 && !dest.isEmpty()) return true; // diagonal move
         else false;
     } else if(rowMove == 2 && !this->hasMoved()) { // enpassant move
-            isEnPassanted = true;
+            enPassanted = true;
             return true;
     }
     // invalid move
