@@ -28,19 +28,19 @@ vector<ChessSquare> Rook::generatePath(ChessPiece &dest) override {
     int destColumn = dest.getCoords().getColumn();
 
     if(srcRow == destRow) { // rook moved on same row
-        // if srcColumn < destColumn is true, the rook moved to right and left otherwise
+        // if srcColumn < destColumn is true, rook moved to right and left otherwise
         int start = srcColumn < destColumn ? srcColumn + 1 : srcColumn - 1;
         int end = destColumn;
-        // if start < end is true, the rook moved to right and left otherwiese
+        // if start < end is true, rook moved to right and left otherwiese
         int step = start < end ? 1 : -1;
         for (int c = start; c != end; c += step) {
             path.emplace_back(srcRow, c);
         }
     } else { // rook moved on same Column
-        // if srcRow < destRow  is true, the rook moved to up and down otherwise
+        // if srcRow < destRow  is true, rook moved to up and down otherwise
         int start = srcRow < destRow ? srcRow + 1 : srcRow - 1;
         int end = destRow;
-        // if start < end is true, the rook moved to up and down otherwiese
+        // if start < end is true, rook moved to up and down otherwiese
         int step = start < end ? 1 : -1;
         for (int r = start; r != end; r += step) {
             path.emplace_back(r, srcColumn);

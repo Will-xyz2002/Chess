@@ -8,9 +8,9 @@ bool Pawn::isValidMove(ChessPiece &dest) override {
     int srcColumn = this->getCoords().getColumn();
     int destRow = dest.getCoords().getRow();
     int destColumn = dest.getCoords().getColumn();
-    // vertical change (rowMove forwarded)
+    // vertical displacement (rowMove forwarded)
     int rowMove = this->getColour() == ChessColour::White ? srcRow - destRow : destRow - srcRow;
-    int colMove = ChessPiece::abs(destColumn - srcColumn); // horizontal change
+    int colMove = ChessPiece::abs(destColumn - srcColumn); // horizontal displacement
 
     // Check if piece is out of board range
     if (!(0 <= srcRow && srcRow <= 7 && 0 <= srcColumn && srcColumn <= 7 &&
@@ -41,7 +41,8 @@ vector<ChessSquare> Pawn::generatePath(ChessPiece &dest) override {
     // vertical change (rowMove forwarded)
     int rowMove = this->getColour() == ChessColour::White ? srcRow - destRow : destRow - srcRow;
 
-    if(srcColumn == destColumn && rowMove == 2) { // enpassant: 2 move forward
+    // enpassant: 2 move forward
+    if(srcColumn == destColumn && rowMove == 2) {
         int midRow = this->getColour() == ChessColour::White ? srcRow - 1 : srcRow + 1;
         path.emplace_back(midRow, srcColumn)
     }
