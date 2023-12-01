@@ -82,5 +82,5 @@ vector<ChessSquare> ChessPiece::generatePath(ChessPiece &dest) {
     return vector<ChessSquare>();
 }
 bool ChessPiece::isValidMove(ChessPiece &dest) { return false; }
-int abs(int p) { return (p >= 0) ? p : -p; }
+int ChessPiece::abs(int p) { return (p >= 0) ? p : -p; }
 
