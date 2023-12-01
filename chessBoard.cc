@@ -304,9 +304,9 @@ void ChessBoard::pawnPromotion(int row, int column, ChessColour colour) {
 
 
 bool ChessBoard::isCastlingPossible(ChessPiece &initial, ChessPiece &dest) {
-
+    return false;
 }
 
 bool ChessBoard::isEnPassantPossible(ChessPiece &initial, ChessPiece &dest) {
-
+    return false;
 }
