@@ -8,7 +8,7 @@ CXXFLAGS = -Wall -g
 INCLUDES = -I.
 
 # Define the source files
-SOURCES = chessPiece.cc bishop.cc king.cc empty.cc chessSquare.cc test_bishop.cc
+SOURCES = chessPiece.cc bishop.cc king.cc empty.cc chessSquare.cc testChessPiece.cc
 
 # Define the object files
 OBJECTS = $(SOURCES:.cc=.o)
