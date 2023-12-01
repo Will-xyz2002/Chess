@@ -1,5 +1,5 @@
 //-----------------------------------------------------
-// now the testpiece only support king and bishop
+// now the testpiece support every chesspiece
 //-----------------------------------------------------
 #include "bishop.h"
 #include "king.h"
