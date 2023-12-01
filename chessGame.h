@@ -8,6 +8,7 @@
 
 class ChessGame {
     ChessBoard board;
+    TextDisplay textDisplay;
     bool whiteTurn = true;
     bool isWhiteWin = false;
     bool isStalemate = false;

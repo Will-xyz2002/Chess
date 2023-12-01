@@ -15,7 +15,7 @@ ChessSquare convertPosition(string position) {
     return {square_row, square_column};
 }
 
-
+// CONSTRUCTOR
 ChessBoard::ChessBoard() {
     std::vector<ChessPiece> row;
     for (int r = 0; r < BOARD_DIMENSION; ++r) {
@@ -27,6 +27,7 @@ ChessBoard::ChessBoard() {
     }
 }
 
+// COPY CONSTRUCTOR
 ChessBoard::ChessBoard(const ChessBoard &other) {
     board = other.board;
     observers = other.observers;
@@ -36,6 +37,7 @@ ChessBoard::ChessBoard(const ChessBoard &other) {
     
 ChessPiece ChessBoard::getPiece(int row, int column) { return board[row][column]; }
 
+// initialize the board
 void ChessBoard::init() {
     // first row
     board[0][0] = Rook   {ChessColour::Black, {0, 0}};
@@ -98,7 +100,18 @@ void ChessBoard::addPiece(char pieceType, std::string position) {
     else if (pieceType == 'k') board[r][c] = King{ChessColour::Black, location};
     else if (pieceType == 'K') board[r][c] = King{ChessColour::White, location};
     notifyObservers(board[r][c]);
-}                       
+}
+
+void ChessBoard::removePiece(std::string position) {
+    ChessSquare location = convertPosition(position);
+    int r = location.getRow();
+    int c = location.getColumn();
+    if (!board[r][c].isEmpty()) {
+        board[r][c] = Empty {{r, c}};
+        notifyObservers(board[r][c]);
+    }
+}
+
 
 bool ChessBoard::kingIsUnderAttack(ChessColour colour) {
     ChessColour opponent = (colour == ChessColour::White) ? ChessColour::Black : ChessColour::White;
@@ -205,7 +218,20 @@ void ChessBoard::emptyBoard() {
         board.emplace_back(row);
         row.clear();
     }
-}          
+}
+
+void ChessBoard::attach(Observer &o) {
+    observers.emplace_back(o);
+}
+
+void ChessBoard::notifyObservers(ChessPiece &piece) {
+    int length = observers.size();
+    for (int i = 0; i < length; ++i) {
+        observers[i]->notify(piece);
+    }
+}
+
+
 
 // PRIVATE METHODS
 bool ChessBoard::isUnderAttack(ChessPiece &target, ChessPiece &piece) {

@@ -2,6 +2,8 @@
 #define TEXT_DISPLAY_H
 #include "observer.h"
 #include "chessPiece.h"
+#include "chessBoard.h"
+#include <iostream>
 
 
 class TextDisplay: public Observer {
@@ -10,10 +12,20 @@ class TextDisplay: public Observer {
 
 public:
     TextDisplay();
+    void setBoard(ChessBoard &board);
     void notify(ChessPiece &piece) override;
-    void displayTurn(ChessColour colour);
-    void displayInvalidMove();
-    void displayDuplicateKing(ChessColour colour);
+
+
+    void outputTurn(bool whiteTurn);
+    void outputInvalidPiece();
+    void outputInvalidRow();
+    void outputInvalidColumn();
+    void outputInvalidMove();
+    void outputCheckmate(bool whiteTurn);
+    void outputStalemate();
+    void outputCheck(bool whiteTurn);
+
+
     friend std::ostream &operator<<(std::ostream &out, TextDisplay t);
 };
 
