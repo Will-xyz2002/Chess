@@ -8,13 +8,13 @@ CXXFLAGS = -Wall -g
 INCLUDES = -I.
 
 # Define the source files
-SOURCES = chessPiece.cc bishop.cc test_bishop.cc
+SOURCES = chessPiece.cc bishop.cc king.cc empty.cc chessSquare.cc test_bishop.cc
 
 # Define the object files
 OBJECTS = $(SOURCES:.cc=.o)
 
 # Define the executable file
-EXECUTABLE = testBishop
+EXECUTABLE = testChessPiece
 
 all: $(EXECUTABLE)
 
