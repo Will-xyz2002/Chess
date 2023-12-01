@@ -1,34 +1,27 @@
-# Prerequisites
-*.d
-
-# Compiled Object files
-*.slo
-*.lo
+# Compiled object and binary files
 *.o
 *.obj
+*.exe
+*.out
+*.dll
+*.so
+*.dylib
 
 # Precompiled Headers
 *.gch
 *.pch
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
 # Compiled Static libraries
-*.lai
-*.la
 *.a
 *.lib
 
-# Executables
-*.exe
-*.out
-*.app
-
+# Ignore all README files
+README
 README.md
+README.txt
+
+# Add other file types or directories you want to ignore
+# For example, editor backup files, temporary files, etc.
+*~
+*.swp
+temp/
