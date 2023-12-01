@@ -8,7 +8,7 @@ class ChessMove {
     ChessPiece dest;
 public:
     ChessMove(ChessPiece &initial, ChessPiece &dest);
+    ChessPiece getInitial();
+    ChessPiece getDest();
 };
-
-std::istream &operator>>(std::istream &in, ChessMove &move);
 #endif

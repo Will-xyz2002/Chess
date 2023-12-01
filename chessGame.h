@@ -10,6 +10,7 @@ class ChessGame {
     ChessBoard board;
     bool whiteTurn = true;
     bool isWhiteWin = false;
+    bool isStalemate = false;
     bool isWon = false;
     Player p1;
     Player p2;
@@ -19,10 +20,10 @@ public:
     ChessGame(ChessBoard board, bool whiteTurn, Player p1, Player p2);
     bool isWhiteTurn();
     bool gameWon();
-    void makeAMove(std::string initial, std::string dest);
+    void makeAMove(std::string initial, std::string dest); // for human player
+    void makeAMove();                                      // for computer player
     void undo();
     void resign();
 };
-
 
 #endif

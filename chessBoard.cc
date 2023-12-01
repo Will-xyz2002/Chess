@@ -39,6 +39,10 @@ ChessPiece ChessBoard::getPiece(int row, int column) {
     return board[row][column];
 }
 
+TextDisplay ChessBoard::getTextDisplay() {
+    return *textDisplay;
+}
+
 void ChessBoard::init() {
 
     // first row
@@ -130,6 +134,13 @@ void ChessBoard::addPiece(char pieceType, std::string position) {
 }
 
 
+void ChessBoard::addPiece(ChessPiece &piece) {
+    int row = piece.getCoords().getRow();
+    int column = piece.getCoords().getColumn();
+    board[row][column] = piece;
+}
+
+
 void ChessBoard::removePiece(std::string position) {
     ChessSquare location = convertPosition(position);
     int r = location.getRow();
@@ -158,23 +169,36 @@ bool ChessBoard::kingIsUnderAttack(ChessColour colour) {
     
 
 bool ChessBoard::isValidMove(ChessPiece &initial, ChessPiece &dest, ChessColour turn) {
-    if (turn == ChessColour::White && initial.getColour() != ChessColour::White) return false;
-    if (turn == ChessColour::Black && initial.getColour() != ChessColour::Black) return false;
-    if (initial.getColour() == dest.getColour()) return false;
+    if (turn == ChessColour::White && initial.getColour() != ChessColour::White) {
+        textDisplay->displayInvalidMove();
+        return false;
+    }
+    if (turn == ChessColour::Black && initial.getColour() != ChessColour::Black) {
+        textDisplay->displayInvalidMove();
+        return false;
+    }
+    if (initial.getColour() == dest.getColour()) {
+        textDisplay->displayInvalidMove();
+        return false;
+    }
     return initial.isValidMove(dest);
 }       
+
 
 bool ChessBoard::isValidPath(ChessPiece &initial, ChessPiece &dest) {
     std::vector<ChessSquare> path = initial.generatePath(dest);
     int length = path.size();
     if (length == 0) return true;
     for (int i = 0; i < length; i++) {
-        if (!board[path[i].getRow()][path[i].getColumn()].isEmpty()) return false;
+        if (!board[path[i].getRow()][path[i].getColumn()].isEmpty()) {
+            textDisplay->displayInvalidMove();
+            return false;
+        }
     }
     return true;
 }      
 
-void ChessBoard::chessMove(ChessSquare &initial, ChessSquare &dest) {
+void ChessBoard::chessMove(ChessSquare initial, ChessSquare dest) {
     int currentRow = initial.getRow();
     int currentCol = initial.getColumn();
     int finalRow = dest.getRow();

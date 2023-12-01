@@ -14,6 +14,7 @@ public:
     void displayTurn(ChessColour colour);
     void displayInvalidMove();
     void displayDuplicateKing(ChessColour colour);
+    friend std::ostream &operator<<(std::ostream &out, TextDisplay t);
 };
 
 #endif
