@@ -10,7 +10,7 @@ bool Empty::isValidMove(ChessPiece &dest) {
     return false;
 }
 
-vector<ChessSquare> generatePath(ChessPiece &dest) {
+vector<ChessSquare> Empty::generatePath(ChessPiece &dest) {
     std::vector<ChessSquare> path;
     return path;
 }
