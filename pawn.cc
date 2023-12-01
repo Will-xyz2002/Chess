@@ -29,7 +29,7 @@ bool Pawn::isValidMove(ChessPiece &dest) {
     if(rowMove == 1) {
         if(colMove == 0) return true; // one move forward
         else if(colMove == 1 && !dest.isEmpty()) return true; // diagonal move
-        else false;
+        else return false;
     } else if(rowMove == 2 && !this->hasMoved()) { // enpassant move
             enPassanted = true;
             return true;
