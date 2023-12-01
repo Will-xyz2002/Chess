@@ -3,26 +3,32 @@
 
 using namespace std;
 
-ChessPiece::ChessPiece(ChessType type, ChessColour colour, ChessSquare coords, bool empty): 
-                        type{type}, colour{colour}, coordinate{coords}, empty{empty} {}
+// default ctor
+ChessPiece::ChessPiece(ChessType type, ChessColour colour, ChessSquare coords, bool empty)
+    : type{type}, colour{colour}, coordinate{coords}, empty{empty} {}
 
+// dtor
 ChessPiece::~ChessPiece() {}
 
 // copy ctor
 ChessPiece::ChessPiece(const ChessPiece &other)
-    : type{other.type}, colour(other.colour), coordinate(other.coordinate), display(other.display),
-      isMoved(other.isMoved), empty(other.empty), observers(other.observers) {
-    // deep copy?
-}
+    : type{other.type}, colour{other.colour}, coordinate{other.coordinate}, display{other.display},
+      isMoved{other.isMoved}, empty{other.empty}, observers{other.observers} {}
 
 // move ctor
 ChessPiece::ChessPiece(ChessPiece &&other)
-    : type{other.type}, colour(other.colour), coordinate(move(other.coordinate)), display(other.display),
-      isMoved(other.isMoved), empty(other.empty), observers(move(other.observers)) {
-    // Reset the members of 'other' ?
+    : type{other.type}, colour{other.colour}, coordinate{move(other.coordinate)}, display{other.display},
+      isMoved{other.isMoved}, empty{other.empty}, observers{move(other.observers)} {
+    // Reset members of other
+    other.type = ChessType::Empty;
+    other.colour = ChessColour::None;
+    other.display = '\0';
+    other.isMoved = false;
+    other.empty = true;
+    other.observers.clear();
 }
 
-
+// copy assignment operator
 ChessPiece &ChessPiece::operator=(const ChessPiece &other) {
     if (this != &other) {
         // Copy all members
@@ -33,11 +39,11 @@ ChessPiece &ChessPiece::operator=(const ChessPiece &other) {
         isMoved = other.isMoved;
         empty = other.empty;
         observers = other.observers;
-        // Deep copy ?
     }
     return *this;
 }
 
+// move assignment operator
 ChessPiece &ChessPiece::operator=(ChessPiece &&other) {
     if (this != &other) {
         // Move all members
@@ -49,7 +55,13 @@ ChessPiece &ChessPiece::operator=(ChessPiece &&other) {
         empty = other.empty;
         observers = move(other.observers);
 
-        // Reset the members of 'other' ?
+        // Reset members of other
+        other.type = ChessType::Empty;
+        other.colour = ChessColour::None;
+        other.display = '\0'; // Default char
+        other.isMoved = false;
+        other.empty = true;
+        other.observers.clear();
     }
     return *this;
 }
@@ -57,26 +69,22 @@ ChessPiece &ChessPiece::operator=(ChessPiece &&other) {
 // accessors
 ChessColour ChessPiece::getColour() { return colour; }
 ChessSquare ChessPiece::getCoords() { return coordinate; }
+ChessType ChessPiece::getType() { return type; }
 char ChessPiece::getDisplay() { return display; }
 bool ChessPiece::isEmpty() { return empty; }
 bool ChessPiece::hasMoved() { return isMoved; }
 
 // settors
-void ChessPiece::setColour(ChessColour colour) { colour = colour; }
-void ChessPiece::setCoords(int row, int column) {
-    coordinate.setCoords(row, column);
+void ChessPiece::setColour(ChessColour newColour) { colour = newColour; }
+void ChessPiece::setDisplay(char newDisplay) { display = newDisplay; }
+void ChessPiece::setCoords(int row, int column) { coordinate.setCoords(row, column); }
+void ChessPiece::setEmpty(bool newEmpty) { this->empty = newEmpty; }
+void ChessPiece::setMoved(bool newIsMoved) { this->isMoved = newIsMoved; }
+
+// other methods
+vector<ChessSquare> ChessPiece::generatePath(ChessPiece &dest) {
+    return vector<ChessSquare>();
 }
-
-
-void ChessPiece::setEmpty(bool empty) { this->empty = empty; }
-void ChessPiece::setMoved(bool isMoved) { this->isMoved = isMoved; }
-
-int abs(int p) {
-    if(p >= 0) return p;
-    else return -p;
-}
-
-void ChessPiece::attach(Observer &o) {
-    observers.emplace_back(o);
-}
-
+bool ChessPiece::isValidMove(ChessPiece &dest) { return false; }
+int abs(int p) { return (p >= 0) ? p : -p; }
+void ChessPiece::attach(Observer &o) { observers.emplace_back(o); }
