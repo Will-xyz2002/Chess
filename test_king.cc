@@ -1,4 +1,4 @@
-#include "bishop.h"
+#include "king.h"
 #include <iostream>
 #include <string>
 using namespace std;
