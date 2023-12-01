@@ -49,3 +49,4 @@ vector<ChessSquare> Bishop::generatePath(ChessPiece &dest) {
     
     return path;
 }
+
