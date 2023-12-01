@@ -1,7 +1,8 @@
 #include <vector>
 #include "queen.h"
 
-Queen::Queen(ChessColour colour, ChessSquare coords): ChessPiece{ChessType::Queen, colour, coords, false} {
+Queen::Queen(ChessColour colour, ChessSquare coords)
+    : ChessPiece{ChessType::Queen, colour, coords, false} {
     if (colour == ChessColour::White) setDisplay('Q');
     else if (colour == ChessColour::Black) setDisplay('q');
 }

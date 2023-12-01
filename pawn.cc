@@ -1,7 +1,8 @@
 #include <vector>
 #include "pawn.h"
 
-Pawn::Pawn(ChessColour colour, ChessSquare coords): ChessPiece{ChessType::Pawn, colour, coords, false} {
+Pawn::Pawn(ChessColour colour, ChessSquare coords)
+    : ChessPiece{ChessType::Pawn, colour, coords, false} {
     if (colour == ChessColour::White) setDisplay('P');
     else if (colour == ChessColour::Black) setDisplay('p');
 }

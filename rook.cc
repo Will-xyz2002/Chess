@@ -1,7 +1,8 @@
 #include <vector>
 #include "rook.h"
 
-Rook::Rook(ChessColour colour, ChessSquare coords): ChessPiece{ChessType::Rook, colour, coords, false} {
+Rook::Rook(ChessColour colour, ChessSquare coords)
+    : ChessPiece{ChessType::Rook, colour, coords, false} {
     if (colour == ChessColour::White) setDisplay('R');
     else if (colour == ChessColour::Black) setDisplay('r');
 }

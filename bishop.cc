@@ -1,7 +1,8 @@
 #include <vector>
 #include "bishop.h"
 
-Bishop::Bishop(ChessColour colour, ChessSquare coords): ChessPiece{ChessType::Bishop, colour, coords, false} {
+Bishop::Bishop(ChessColour colour, ChessSquare coords)
+    : ChessPiece{ChessType::Bishop, colour, coords, false} {
     if (colour == ChessColour::White) setDisplay('B');
     else if (colour == ChessColour::Black) setDisplay('b');
 }
@@ -36,10 +37,10 @@ vector<ChessSquare> Bishop::generatePath(ChessPiece &dest) {
 
     // vertical Direction: 
     // if srcRow < destRow is true, bishop moved up and down otherwise
-    int rowDict = (srcRow < destRow) ? 1 : -1;
+    int rowDict = srcRow < destRow ? 1 : -1;
     // horizontal Direction:
     // if srcColumn < destColumn is true, bishop moved right and left otherwise
-    int colDict = (srcColumn < destColumn) ? 1 : -1;
+    int colDict = srcColumn < destColumn ? 1 : -1;
 
     // diagonal move: row and column get one diagonal step closer to destination
     for(int r = srcRow + rowDict, c = srcColumn + colDict;
@@ -49,4 +50,3 @@ vector<ChessSquare> Bishop::generatePath(ChessPiece &dest) {
     
     return path;
 }
-
