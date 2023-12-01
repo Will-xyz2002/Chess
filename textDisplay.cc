@@ -1,6 +1,4 @@
 #include "textDisplay.h"
-
-
 TextDisplay::TextDisplay() { 
     for (int r = 0; r < BOARD_DIMENSION; ++r) {
         for (int c = 0; c < BOARD_DIMENSION; ++c) {
@@ -29,33 +27,43 @@ void TextDisplay::outputTurn(bool whiteTurn) {
     else cout << "Black turn." << endl;
 }
 
-void outputInvalidPiece() {
+void TextDisplay::outputInvalidPiece() {
     cout << "Invalid piece. Please enter [a-h][1-8]" << endl;
 }
 
-void outputInvalidRow() {
+void TextDisplay::outputInvalidRow() {
     cout << "Invalid row input - row needs to be from 1 to 8" << endl;
 }
 
-void outputInvalidColumn() {
+void TextDisplay::outputInvalidColumn() {
     cout << "Invalid column input - column needs to be a letter a to h" << endl;
 }
 
-void outputInvalidMove() {
+void TextDisplay::outputInvalidMove() {
     cout << "Invalid move. Please try again." << endl;
 
 }
-void outputCheckmate(bool whiteTurn) {
+void TextDisplay::outputCheckmate(bool whiteTurn) {
     cout << "Checkmate!";
     if (whiteTurn) cout << "Black wins!" << endl;
     else cout << "White wins!" << endl;
 }
 
-void outputStalemate() {
+void TextDisplay::outputStalemate() {
     cout << "Stalemate!" << endl;
 }
 
-void outputCheck(bool whiteTurn) {
+void TextDisplay::outputCheck(bool whiteTurn) {
     if (whiteTurn) cout << "White is in check." << endl;
     else cout << "Black is in check." << endl;
+}
+
+std::ostream &operator<<(std::ostream &out, TextDisplay t) {
+    for (int r = 0; r < BOARD_DIMENSION; ++r) {
+        for (int c = 0; c < BOARD_DIMENSION; ++c) {
+            out << t.display[r][c];
+        }
+        out << endl;
+    }
+    return out;
 }
