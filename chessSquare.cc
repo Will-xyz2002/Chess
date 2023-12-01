@@ -8,4 +8,3 @@ void ChessSquare::setCoords(const int row, const int column) {
     this->row = row;
     this->column = column;
 }
-    

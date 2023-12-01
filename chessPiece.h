@@ -35,11 +35,11 @@ public:
     bool hasMoved();
 
     // settors
-    void setColour(ChessColour colour);
-    void setDisplay(char display);
+    void setColour(ChessColour newColour);
+    void setDisplay(char newDisplay);
     void setCoords(int row, int column);
-    void setEmpty(bool empty);
-    void setMoved(bool isMoved);
+    void setEmpty(bool newEmpty);
+    void setMoved(bool newIsMoved);
 
     // other methods
     virtual vector<ChessSquare> generatePath(ChessPiece &dest);

@@ -38,10 +38,10 @@ vector<ChessSquare> Queen::generatePath(ChessPiece &dest) {
 
     // vertical Direction: 
     // if srcRow < destRow is true, Bishop moved up and down otherwise
-    int rowDict = srcRow < destRow ? 1 : -1;
+    int rowDict = (srcRow < destRow) ? 1 : -1;
     // horizontal Direction:
     // if srcColumn < destColumn is true, Bishop moved right and left otherwise
-    int colDict = srcColumn < destColumn ? 1 : -1;
+    int colDict = (srcColumn < destColumn) ? 1 : -1;
 
     if (srcRow == destRow) { // Horizontal move
         for (int c = srcColumn + colDict; c != destColumn; c += colDict) {
