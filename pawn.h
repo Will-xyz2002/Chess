@@ -13,7 +13,6 @@ public:
     bool isEnPassanted();
     bool isValidMove(ChessPiece &dest) override;
     vector<ChessSquare> generatePath(ChessPiece &dest) override;
-    void promotion();
 };
 
 #endif

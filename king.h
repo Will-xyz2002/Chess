@@ -6,8 +6,6 @@
 using namespace std;
 
 class King: public ChessPiece {
-    bool isChecked;
-    bool isCastled;
 
 public:
     King(ChessColour colour, ChessSquare coords);
