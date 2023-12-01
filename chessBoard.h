@@ -24,7 +24,10 @@ class ChessBoard {
     std::vector<Observer*> observers;
 
     bool isUnderAttack(ChessPiece &target, ChessPiece &piece);
+    bool isCastlingPossible(ChessPiece &initial, ChessPiece &dest);            // check whether the castling move can be achieved
+    bool isEnPassantPossible(ChessPiece &initial, ChessPiece &dest);           // check whether the en passant move can be achieved
     bool validMoveExist(ChessPiece &piece);
+    void pawnPromotion(int row, int column, ChessColour colour);               // promote pawn
 
 public:
     ChessBoard();
@@ -47,7 +50,7 @@ public:
 
     
     void attach(Observer &o);
-    void notifyObservers(ChessPiece &p);
+    void notifyObservers(ChessPiece &piece);
 };
 
 #endif

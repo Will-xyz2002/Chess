@@ -135,7 +135,12 @@ bool ChessBoard::kingIsUnderAttack(ChessColour colour) {
 bool ChessBoard::isValidMove(ChessPiece &initial, ChessPiece &dest, ChessColour turn) {
     if (initial.getColour() != turn) return false;
     if (initial.getColour() == dest.getColour()) return false;
-    return initial.isValidMove(dest);
+    if (initial.isValidMove(dest)) return true;
+    // edge cases: en passant, castling
+
+    if (initial.getType() == ChessType::King) return isCastlingPossible(initial, dest);
+    if (initial.getType() == ChessType::Pawn) return isEnPassantPossible(initial, dest);
+    return false;
 }       
 
 
@@ -165,12 +170,20 @@ void ChessBoard::chessMove(ChessSquare initial, ChessSquare dest) {
         else blackKing->setCoords(finalRow, finalCol);
     }
     board[currentRow][currentCol] = Empty {{currentRow, currentCol}};
+
+    // special case: promotion
+    if (finalRow == 0 && board[finalRow][finalCol].getColour() == ChessColour::White &&
+        board[finalRow][finalCol].getType() == ChessType::Pawn) {
+        pawnPromotion(finalRow, finalCol, ChessColour::White);
+
+    } else if (finalRow == 7 && board[finalRow][finalCol].getColour() == ChessColour::Black &&
+        board[finalRow][finalCol].getType() == ChessType::Pawn) {
+        pawnPromotion(finalRow, finalCol, ChessColour::Black);
+    }
+
     notifyObservers(board[currentRow][currentCol]);
     notifyObservers(board[finalRow][finalCol]);
 } 
-
-
-
 
 bool ChessBoard::isValidBoard() {
     for (int c = 0; c < BOARD_DIMENSION; ++c) {
@@ -261,4 +274,39 @@ bool ChessBoard::validMoveExist(ChessPiece &piece) {
         }
     }
     return false;
+}
+
+void ChessBoard::pawnPromotion(int row, int column, ChessColour colour) {
+    char pieceType;
+    while (cin >> pieceType) {
+        pieceType = toupper(pieceType);
+        if (pieceType == 'Q') {
+            board[row][column] = Queen{colour, {row, column}};
+            break;
+        }
+        else if (pieceType == 'R') {
+            board[row][column] = Rook{colour, {row, column}};
+            break;
+        }
+        else if (pieceType == 'B') {
+            board[row][column] = Bishop{colour, {row, column}};
+            break;
+        }
+        else if (pieceType == 'N') {
+            board[row][column] = Knight{colour, {row, column}};
+            break;
+        }
+        else {
+            cout << "Invalid promotion piece. Please enter again." << endl;
+        }
+    }
+}
+
+
+bool ChessBoard::isCastlingPossible(ChessPiece &initial, ChessPiece &dest) {
+
+}
+
+bool ChessBoard::isEnPassantPossible(ChessPiece &initial, ChessPiece &dest) {
+
 }
