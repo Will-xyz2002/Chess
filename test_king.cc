@@ -2,10 +2,10 @@
 #include <iostream>
 #include <string>
 using namespace std;
-// this is a test harness for testing all the features of bishop.
+// this is a test harness for testing all the features of king.
 int main(){
     ChessSquare initialPosition(3, 3);
-    Bishop White_B(ChessColour::White, initialPosition);
+    King White_K(ChessColour::White, initialPosition);
     int choice;
     while (true){
         cout << "select a test to do:" << endl;
@@ -23,7 +23,7 @@ int main(){
             case 1:  // valid move test;
                 cin << row << col;
                 destination.setCoords(row, col);
-                if (White_B.isValidMove(destination)){
+                if (White_K.isValidMove(destination)){
                     cout << "ValidMove Test passed!!" << endl;
                 }
                 else{
@@ -33,7 +33,7 @@ int main(){
             case 2: // invalid move test
                 cin << row << col;
                 destination.setCoords(row, col);
-                if (!White_B.isValidMove(destination)){
+                if (!White_K.isValidMove(destination)){
                     cout << "InvalidMove test passed!!" << endl;
                 }
                 else{
@@ -43,8 +43,8 @@ int main(){
             case 3: //path generation test
                 cin << row << col;
                 destination.setCoords(row, col);
-                if (White_B.isValidMove(destination)){
-                    vector<ChessSquare> result = White_B.generatePath(destination);
+                if (White_K.isValidMove(destination)){
+                    vector<ChessSquare> result = White_K.generatePath(destination);
                     cout << "The path is :" << endl;
                     for (const auto &p : path){
                         cout << "Row is :" << p.getRow();
@@ -60,7 +60,7 @@ int main(){
                 cout << "input two integers that are row and column which is out of bound: (can be 8 8 or 10 10)" << endl;
                 cin << row << col;
                 destination.setCoords(row, col);
-                if (!White_B.isValidMove(destination)) {
+                if (!White_K.isValidMove(destination)) {
                     cout << "BoardBoundary test passed!!" << endl;
                 } else {
                     cout << "BoardBoundary test NOT passed!!" << endl;
@@ -69,7 +69,7 @@ int main(){
 
             case 5: // No Movement Test
                 cout << "Testing no movement by staying at (3, 3)" << endl;
-                if (!White_B.isValidMove(initialPosition)) {
+                if (!White_K.isValidMove(initialPosition)) {
                     cout << "NoMovement test passed!!" << endl;
                 } else {
                     cout << "NoMovement test NOT passed!!" << endl;
