@@ -1,7 +1,8 @@
 #include <vector>
 #include "knight.h"
 
-Knight::Knight(ChessColour colour, ChessSquare coords): ChessPiece{ChessType::Knight, colour, coords, false} {
+Knight::Knight(ChessColour colour, ChessSquare coords)
+    : ChessPiece{ChessType::Knight, colour, coords, false} {
     if (colour == ChessColour::White) setDisplay('N');
     else if (colour == ChessColour::Black) setDisplay('n');
 }

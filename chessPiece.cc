@@ -13,19 +13,18 @@ ChessPiece::~ChessPiece() {}
 // copy ctor
 ChessPiece::ChessPiece(const ChessPiece &other)
     : type{other.type}, colour{other.colour}, coordinate{other.coordinate}, display{other.display},
-      isMoved{other.isMoved}, empty{other.empty}, observers{other.observers} {}
+      isMoved{other.isMoved}, empty{other.empty} {}
 
 // move ctor
 ChessPiece::ChessPiece(ChessPiece &&other)
     : type{other.type}, colour{other.colour}, coordinate{move(other.coordinate)}, display{other.display},
-      isMoved{other.isMoved}, empty{other.empty}, observers{move(other.observers)} {
+      isMoved{other.isMoved}, empty{other.empty} {
     // Reset members of other
     other.type = ChessType::Empty;
     other.colour = ChessColour::None;
     other.display = '\0';
     other.isMoved = false;
     other.empty = true;
-    other.observers.clear();
 }
 
 // copy assignment operator
@@ -38,7 +37,6 @@ ChessPiece &ChessPiece::operator=(const ChessPiece &other) {
         display = other.display;
         isMoved = other.isMoved;
         empty = other.empty;
-        observers = other.observers;
     }
     return *this;
 }
@@ -53,7 +51,6 @@ ChessPiece &ChessPiece::operator=(ChessPiece &&other) {
         display = other.display;
         isMoved = other.isMoved;
         empty = other.empty;
-        observers = move(other.observers);
 
         // Reset members of other
         other.type = ChessType::Empty;
@@ -61,7 +58,6 @@ ChessPiece &ChessPiece::operator=(ChessPiece &&other) {
         other.display = '\0'; // Default char
         other.isMoved = false;
         other.empty = true;
-        other.observers.clear();
     }
     return *this;
 }
@@ -87,4 +83,4 @@ vector<ChessSquare> ChessPiece::generatePath(ChessPiece &dest) {
 }
 bool ChessPiece::isValidMove(ChessPiece &dest) { return false; }
 int abs(int p) { return (p >= 0) ? p : -p; }
-void ChessPiece::attach(Observer &o) { observers.emplace_back(o); }
+

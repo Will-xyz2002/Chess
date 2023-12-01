@@ -1,7 +1,8 @@
 #include <vector>
 #include "king.h"
 
-King::King(ChessColour colour, ChessSquare coords): ChessPiece{ChessType::King, colour, coords, false} {
+King::King(ChessColour colour, ChessSquare coords)
+    : ChessPiece{ChessType::King, colour, coords, false} {
     if (colour == ChessColour::White) setDisplay('K');
     else if (colour == ChessColour::Black) setDisplay('k');
 }

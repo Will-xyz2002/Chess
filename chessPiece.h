@@ -2,7 +2,6 @@
 #define CHESS_PIECE_H
 #include <vector>
 #include "chessSquare.h"
-#include "observer.h"
 
 using namespace std;
 
@@ -16,7 +15,6 @@ class ChessPiece {
     char display;
     bool isMoved = false;
     bool empty;
-    vector<Observer*> observers;
 
 public:
     ChessPiece(ChessType type, ChessColour colour, ChessSquare coords, bool empty);
@@ -45,7 +43,6 @@ public:
     virtual vector<ChessSquare> generatePath(ChessPiece &dest);
     virtual bool isValidMove(ChessPiece &dest); // check move validity (movement)
     int abs(int p); // returns the absolute value of path p (distance)
-    void attach(Observer &o); // add observers
 };
 
 #endif
