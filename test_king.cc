@@ -75,10 +75,7 @@ int main(){
                     cout << "NoMovement test NOT passed!!" << endl;
                 }
                 break;
-                
-
         }
     }
 }
-
 
