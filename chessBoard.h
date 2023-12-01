@@ -1,6 +1,7 @@
 #ifndef CHESS_BOARD_H
 #define CHESS_BOARD_H
 #include "chessPiece.h"
+#include "observer.h"
 #include "king.h"
 #include "knight.h"
 #include "pawn.h"
@@ -20,17 +21,16 @@ class ChessBoard {
     std::vector<std::vector<ChessPiece>> board;
     std::unique_ptr <King> whiteKing = nullptr;
     std::unique_ptr <King> blackKing = nullptr;
-    std::unique_ptr<TextDisplay> textDisplay;
+    std::vector<Observer*> observers;
+
     bool isUnderAttack(ChessPiece &target, ChessPiece &piece);
     bool validMoveExist(ChessPiece &piece);
-
 
 public:
     ChessBoard();
     ChessBoard(const ChessBoard &other);
     
     ChessPiece getPiece(int row, int column);
-    TextDisplay getTextDisplay();
     
     void init();                                                                // initialize the chess board with standard chess pieces
     void addPiece(char pieceType, std::string position);                        // add piece to the board
@@ -44,6 +44,10 @@ public:
     void emptyBoard();                                                          // make the board empty (all Empty pieces)
     bool validMoveExist(ChessColour colour);                                    // return true whenever there are any 
                                                                                 // existing move available in colour side
+
+    
+    void attach(Observer &o);
+    void notifyObservers(ChessPiece &p);
 };
 
 #endif

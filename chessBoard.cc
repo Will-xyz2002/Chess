@@ -18,7 +18,6 @@ ChessSquare convertPosition(string position) {
 
 ChessBoard::ChessBoard() {
     std::vector<ChessPiece> row;
-    textDisplay = make_unique<TextDisplay>();
     for (int r = 0; r < BOARD_DIMENSION; ++r) {
         for (int c = 0; c < BOARD_DIMENSION; ++c) {
             row.emplace_back(Empty{{r, c}});
@@ -30,21 +29,14 @@ ChessBoard::ChessBoard() {
 
 ChessBoard::ChessBoard(const ChessBoard &other) {
     board = other.board;
+    observers = other.observers;
     whiteKing = make_unique<King>(other.whiteKing);
     blackKing = make_unique<King>(other.blackKing);
-    textDisplay = make_unique<TextDisplay>(other.textDisplay);
 }
     
-ChessPiece ChessBoard::getPiece(int row, int column) {
-    return board[row][column];
-}
-
-TextDisplay ChessBoard::getTextDisplay() {
-    return *textDisplay;
-}
+ChessPiece ChessBoard::getPiece(int row, int column) { return board[row][column]; }
 
 void ChessBoard::init() {
-
     // first row
     board[0][0] = Rook   {ChessColour::Black, {0, 0}};
     board[0][1] = Knight {ChessColour::Black, {0, 1}};
@@ -75,32 +67,25 @@ void ChessBoard::init() {
     board[7][6] = Knight {ChessColour::White, {7, 6}};
     board[7][7] = Knight {ChessColour::White, {7, 7}};
 
-    // subscribe all piece to textDisplay
-    for (int r = 0; r < BOARD_DIMENSION; ++r) {
-        for (int c = 0; c < BOARD_DIMENSION; ++c) {
-            board[r][c].attach(*textDisplay);
-        }
-    }
-
     if (blackKing != nullptr) blackKing.reset();
     if (whiteKing != nullptr) whiteKing.reset();
 
     blackKing = make_unique<King>(board[0][4]);
     whiteKing = make_unique<King>(board[7][4]);
+
+    for (int r = 0; r < BOARD_DIMENSION; ++r) {
+        for (int c = 0; c < BOARD_DIMENSION; ++c) {
+            notifyObservers(board[r][c]);
+        }
+    }
 }                                                   
 
 
 void ChessBoard::addPiece(char pieceType, std::string position) {
     ChessSquare location = convertPosition(position);
     int r = location.getRow();
-    int c = location.getColumn();
-
-    if (board[r][c].getType() == ChessType::King) {
-        if (board[r][c].getColour() == ChessColour::White) whiteKing.reset();
-        else blackKing.reset();
-    } 
-
-    if      (pieceType == 'r') board[r][c] = Rook{ChessColour::Black, location};
+    int c = location.getColumn(); 
+    if (pieceType == 'r') board[r][c] = Rook{ChessColour::Black, location};
     else if (pieceType == 'R') board[r][c] = Rook{ChessColour::White, location};
     else if (pieceType == 'n') board[r][c] = Knight{ChessColour::Black, location};
     else if (pieceType == 'N') board[r][c] = Knight{ChessColour::White, location};
@@ -110,58 +95,24 @@ void ChessBoard::addPiece(char pieceType, std::string position) {
     else if (pieceType == 'Q') board[r][c] = Queen{ChessColour::White, location};
     else if (pieceType == 'p') board[r][c] = Pawn{ChessColour::Black, location};
     else if (pieceType == 'P') board[r][c] = Pawn{ChessColour::White, location};
-
-    // there can only be two kings
-    else if (pieceType == 'k') {
-        if (blackKing != nullptr) {
-            textDisplay->displayDuplicateKing(ChessColour::Black);
-        }
-        else {
-            board[r][c] = King{ChessColour::Black, location};
-            blackKing = make_unique<King>(board[r][c]);
-        }
-    }
-    else if (pieceType == 'K') {
-        if (whiteKing != nullptr) {
-            textDisplay->displayDuplicateKing(ChessColour::White);
-        }
-        else {
-            board[r][c] = King{ChessColour::White, location};
-            whiteKing = make_unique<King>(board[r][c]);
-        }
-    }
-    board[r][c].attach(*textDisplay);
-}
-
-
-void ChessBoard::addPiece(ChessPiece &piece) {
-    int row = piece.getCoords().getRow();
-    int column = piece.getCoords().getColumn();
-    board[row][column] = piece;
-}
-
-
-void ChessBoard::removePiece(std::string position) {
-    ChessSquare location = convertPosition(position);
-    int r = location.getRow();
-    int c = location.getColumn();
-    if (board[r][c].getType() != ChessType::Empty) {
-        board[r][c] = Empty{{r, c}};
-        board[r][c].attach(*textDisplay);
-    }
+    else if (pieceType == 'k') board[r][c] = King{ChessColour::Black, location};
+    else if (pieceType == 'K') board[r][c] = King{ChessColour::White, location};
+    notifyObservers(board[r][c]);
 }                       
 
-
 bool ChessBoard::kingIsUnderAttack(ChessColour colour) {
-    for (int r = 0; r < BOARD_DIMENSION; ++r) {
-        for (int c = 0; c < BOARD_DIMENSION; ++c) {
-            if (colour == ChessColour::White &&
-                board[r][c].getColour() == ChessColour::Black &&
-                isUnderAttack(*whiteKing, board[r][c])) return true;
-            
-            else if (colour == ChessColour::Black &&
-                    board[r][c].getColour() == ChessColour::White &&
-                    isUnderAttack(*blackKing, board[r][c])) return true;
+    ChessColour opponent = (colour == ChessColour::White) ? ChessColour::Black : ChessColour::White;
+    if (colour == ChessColour::White) {
+        for (int r = 0; r < BOARD_DIMENSION; ++r) {
+            for (int c = 0; c < BOARD_DIMENSION; ++c) {
+                if (board[r][c].getColour() == opponent && isUnderAttack(*whiteKing, board[r][c])) return true;
+            }
+        }
+    } else if (colour == ChessColour::Black) {
+        for (int r = 0; r < BOARD_DIMENSION; ++r) {
+            for (int c = 0; c < BOARD_DIMENSION; ++c) {
+                if (board[r][c].getColour() == opponent && isUnderAttack(*blackKing, board[r][c])) return true;
+            }
         }
     }
     return false;
@@ -169,18 +120,8 @@ bool ChessBoard::kingIsUnderAttack(ChessColour colour) {
     
 
 bool ChessBoard::isValidMove(ChessPiece &initial, ChessPiece &dest, ChessColour turn) {
-    if (turn == ChessColour::White && initial.getColour() != ChessColour::White) {
-        textDisplay->displayInvalidMove();
-        return false;
-    }
-    if (turn == ChessColour::Black && initial.getColour() != ChessColour::Black) {
-        textDisplay->displayInvalidMove();
-        return false;
-    }
-    if (initial.getColour() == dest.getColour()) {
-        textDisplay->displayInvalidMove();
-        return false;
-    }
+    if (initial.getColour() != turn) return false;
+    if (initial.getColour() == dest.getColour()) return false;
     return initial.isValidMove(dest);
 }       
 
@@ -189,52 +130,74 @@ bool ChessBoard::isValidPath(ChessPiece &initial, ChessPiece &dest) {
     std::vector<ChessSquare> path = initial.generatePath(dest);
     int length = path.size();
     if (length == 0) return true;
+    int r, c;
     for (int i = 0; i < length; i++) {
-        if (!board[path[i].getRow()][path[i].getColumn()].isEmpty()) {
-            textDisplay->displayInvalidMove();
-            return false;
-        }
+        r = path[i].getRow();
+        c = path[i].getColumn();
+        if (!board[r][c].isEmpty()) return false;
     }
     return true;
 }      
+
 
 void ChessBoard::chessMove(ChessSquare initial, ChessSquare dest) {
     int currentRow = initial.getRow();
     int currentCol = initial.getColumn();
     int finalRow = dest.getRow();
     int finalCol = dest.getColumn();
-
     board[finalRow][finalCol] = board[currentRow][currentCol];
     board[finalRow][finalCol].setCoords(finalRow, finalCol);
-
     if (board[finalRow][finalCol].getType() == ChessType::King) {
         if (board[finalRow][finalCol].getColour() == ChessColour::White) whiteKing->setCoords(finalRow, finalCol);
         else blackKing->setCoords(finalRow, finalCol);
     }
-
     board[currentRow][currentCol] = Empty {{currentRow, currentCol}};
+    notifyObservers(board[currentRow][currentCol]);
+    notifyObservers(board[finalRow][finalCol]);
 } 
+
+
+
 
 bool ChessBoard::isValidBoard() {
     for (int c = 0; c < BOARD_DIMENSION; ++c) {
         if (board[0][c].getType() == ChessType::Pawn) return false;
         if (board[7][c].getType() == ChessType::Pawn) return false;
     }
+    ChessSquare whiteKingPos {0, 0};
+    ChessSquare blackKingPos {0, 0};
+    int whiteKingCount = 0;
+    int blackKingCount = 0;
+    for (int r = 0; r < BOARD_DIMENSION; ++r) {
+        for (int c = 0; c < BOARD_DIMENSION; ++c) {
+            if (board[r][c].getType() == ChessType::King) {
+                if (board[r][c].getColour() == ChessColour::White) {
+                    whiteKingCount += 1;
+                    whiteKingPos.setCoords(r, c);
+                }
+                else {
+                    blackKingCount +=1;
+                    blackKingPos.setCoords(r, c);
+                }
+            }
+        }
+    }
+    if (whiteKingCount != 1 || blackKingCount != 1) return false;
+    if (whiteKing != nullptr) whiteKing.reset();
+    if (blackKing != nullptr) blackKing.reset();
+    whiteKing = make_unique<King>(ChessColour::White, whiteKingPos);
+    blackKing = make_unique<King>(ChessColour::Black, blackKingPos);
     if (kingIsUnderAttack(ChessColour::White) || kingIsUnderAttack(ChessColour::Black)) return false;
     return true;
 }
 
 void ChessBoard::emptyBoard() {
     board.clear();
-    textDisplay.reset();
     whiteKing.reset();
     blackKing.reset();
-
     whiteKing = nullptr;
     blackKing = nullptr;
-
     std::vector<ChessPiece> row;
-    textDisplay = make_unique<TextDisplay>();
     for (int r = 0; r < BOARD_DIMENSION; ++r) {
         for (int c = 0; c < BOARD_DIMENSION; ++c) {
             row.emplace_back(Empty{{r, c}});
@@ -249,6 +212,7 @@ bool ChessBoard::isUnderAttack(ChessPiece &target, ChessPiece &piece) {
     return isValidMove(piece, target, piece.getColour()) &&
            isValidPath(piece, target);
 }
+
 
 bool ChessBoard::validMoveExist(ChessColour colour) {
     std::vector<ChessPiece> allPieces;
