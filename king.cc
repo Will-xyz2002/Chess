@@ -20,13 +20,19 @@ bool King::isValidMove(ChessPiece &dest) {
           0 <= destRow && destRow <= 7 && 0 <= destColumn && destColumn <= 7)) {
         return false;
     }
+
+    if (rowMove == 1 && colMove == 0) return true;
+    else if (rowMove == 0 && colMove == 1) return true;
+    else if (rowMove == 1 && colMove == 1) return true;
+    else return false;
+/*
     // Check if piece has not moved
     if(srcRow == destRow && srcColumn == destColumn) return false;
     // Check for straight or diagonal move by extacly one
     if(srcRow == destRow && colMove != 1) return false; // horizontal move
     else if(srcColumn == destColumn && rowMove != 1) return false; // vertical move
     else if(rowMove != 1 && colMove != 1) return false; // diagonal
-    else return true; // valid move
+    else return true; // valid move */
 }
 
 vector<ChessSquare> King::generatePath(ChessPiece &dest) {

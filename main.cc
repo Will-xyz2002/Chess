@@ -47,7 +47,7 @@ bool assignPlayer(string p, unique_ptr<Player> &player, ChessColour colour) {
 
 int main(void) {
     string command;
-    unique_ptr <ChessGame> game;
+    unique_ptr <ChessGame> game = nullptr;
     ChessBoard board;
     bool isWhiteTurn = true;
     bool gameIsOn = false;
@@ -70,6 +70,7 @@ int main(void) {
                         break;
                     }
                     if (!setup) board.init();
+                    if (game != nullptr) game.reset();
                     game = make_unique<ChessGame>(board, isWhiteTurn, *p1, *p2);
                     gameIsOn = true;
                 }

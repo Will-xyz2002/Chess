@@ -134,8 +134,10 @@ bool ChessBoard::kingIsUnderAttack(ChessColour colour) {
     // evaluate every opponent piece, whether they can attack the player's king
     for (int r = 0; r < BOARD_DIMENSION; ++r) {
         for (int c = 0; c < BOARD_DIMENSION; ++c) {
-            ChessSquare opponent_square{r, c};
-            if (board[r][c].getColour() == opponent && isUnderAttack(king, opponent_square)) return true;
+            if (board[r][c].getColour() == opponent) {
+                ChessSquare opponent_square{r, c};
+                if (isUnderAttack(king, opponent_square)) return true;
+            }
         }
     }
     return false;
@@ -365,7 +367,12 @@ std::ostream &operator<<(ostream &out, ChessBoard &b) {
 bool ChessBoard::isUnderAttack(ChessSquare &target, ChessSquare &piece) {
     // return whether it is possible for the piece to attack the target
     ChessColour colour = board[piece.getRow()][piece.getColumn()].getColour();
-    return isValidMove(piece, target, colour) && isValidPath(piece, target); 
+    if (isValidMove(piece, target, colour) && isValidPath(piece, target)) {
+        ChessBoard temp = *this;
+        temp.chessMove(piece, target);
+        if (!temp.kingIsUnderAttack(colour)) return true;
+    }
+    return false;
 }
 
 
@@ -388,15 +395,16 @@ bool ChessBoard::validMoveExist(ChessColour colour) {
 
 bool ChessBoard::validMoveExist(ChessSquare piece) {
     // evaluate whether the piece at the particular chessSquare can make a valid move
+    ChessColour turn = board[piece.getRow()][piece.getColumn()].getColour();
     for (int r = 0; r < BOARD_DIMENSION; ++r) {
         for (int c = 0; c < BOARD_DIMENSION; ++c) {
             ChessSquare square {r, c};
-            if (isValidMove(piece, square, board[piece.getRow()][piece.getColumn()].getColour()) && 
-                isValidPath(piece, square)) {
+            if (isValidMove(piece, square, turn) && isValidPath(piece, square)) {
                     ChessBoard temp = *this;
                     temp.chessMove(piece, square);
-                    if (!temp.kingIsUnderAttack(board[piece.getRow()][piece.getColumn()].getColour())) return true;
-                    
+                    if (!temp.kingIsUnderAttack(turn)) {
+                        return true;
+                    }
             }
         }
     }

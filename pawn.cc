@@ -27,13 +27,10 @@ bool Pawn::isValidMove(ChessPiece &dest) {
     if(srcRow == destRow && srcColumn == destColumn) return false;
     // Check for straight move and diagonal move
     if(rowMove == 1) {
-        if(colMove == 0) return true; // one move forward
-        else if(colMove == 1 && !dest.isEmpty()) return true; // diagonal move
+        if (colMove == 0 && dest.isEmpty()) return true; // one move forward
+        else if (colMove == 1 && !dest.isEmpty()) return true; // diagonal move
         else return false;
-    } else if(rowMove == 2 && !this->hasMoved()) { // enpassant move
-            enPassanted = true;
-            return true;
-    }
+    } else if(rowMove == 2 && colMove == 0 && !this->hasMoved() && dest.isEmpty()) return true;
     // invalid move
     return false;
 }
