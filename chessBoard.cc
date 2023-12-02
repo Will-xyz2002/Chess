@@ -395,7 +395,7 @@ bool ChessBoard::validMoveExist(ChessSquare piece) {
                 isValidPath(piece, square)) {
                     ChessBoard temp = *this;
                     temp.chessMove(piece, square);
-                    if (!kingIsUnderAttack(board[piece.getRow()][piece.getColumn()].getColour())) return true;
+                    if (!temp.kingIsUnderAttack(board[piece.getRow()][piece.getColumn()].getColour())) return true;
                     
             }
         }
