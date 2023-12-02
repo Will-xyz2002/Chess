@@ -97,6 +97,7 @@ void ChessGame::makeAMove(std::string initial, std::string dest) {
     textDisplay->notify(targetPiece);
 
     cout << *textDisplay; // output the board
+    // whiteTurn changes HERE
     whiteTurn = whiteTurn ? false : true;
 
 
@@ -176,4 +177,7 @@ void ChessGame::resign() {
     textDisplay->outputResign(whiteTurn);
 }
 
+bool ChessGame::isStalemated(){
+    return isStalemate;
+}
 
