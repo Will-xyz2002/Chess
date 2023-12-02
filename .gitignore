@@ -6,6 +6,7 @@
 *.dll
 *.so
 *.dylib
+*.d
 
 # Precompiled Headers
 *.gch
