@@ -22,10 +22,10 @@ class ChessBoard {
     ChessPiece *blackKing = nullptr;
     std::vector<Observer*> observers;
 
-    bool isUnderAttack(ChessPiece &target, ChessPiece &piece);
-    bool isCastlingPossible(ChessPiece &initial, ChessPiece &dest);            // check whether the castling move can be achieved
-    bool isEnPassantPossible(ChessPiece &initial, ChessPiece &dest);           // check whether the en passant move can be achieved
-    bool validMoveExist(ChessPiece &piece);
+    bool isUnderAttack(ChessSquare &target, ChessSquare &piece);
+    bool isCastlingPossible(ChessSquare &initial, ChessSquare &dest);            // check whether the castling move can be achieved
+    bool isEnPassantPossible(ChessSquare &initial, ChessSquare &dest);           // check whether the en passant move can be achieved
+    bool validMoveExist(ChessSquare piece);
     void pawnPromotion(int row, int column, ChessColour colour);               // promote pawn
 
 public:
@@ -39,8 +39,8 @@ public:
     void addPiece(ChessPiece &piece);                                           // add piece to the board (using piece instead of input)
     void removePiece(std::string position);                                     // remove piece from the board (if not Empty)
     bool kingIsUnderAttack(ChessColour colour);                                 // return whether a white/black king is in check
-    bool isValidMove(ChessPiece &initial, ChessPiece &dest, ChessColour turn);  // determine whether a move is valid (movement)
-    bool isValidPath(ChessPiece &initial, ChessPiece &dest);                    // determine whether a move is valid (no obstacle)
+    bool isValidMove(ChessSquare &initial, ChessSquare &dest, ChessColour turn);  // determine whether a move is valid (movement)
+    bool isValidPath(ChessSquare &initial, ChessSquare &dest);                    // determine whether a move is valid (no obstacle)
     void chessMove(ChessSquare initial, ChessSquare dest);                      // make a move
     bool isValidBoard();                                                        // return whether the setup board is valid
     void emptyBoard();                                                          // make the board empty (all Empty pieces)
@@ -50,6 +50,6 @@ public:
     
     void attach(Observer *o);
     void notifyObservers(ChessPiece &piece);
+    friend std::ostream &operator<<(ostream &out, ChessBoard &b);
 };
-
 #endif

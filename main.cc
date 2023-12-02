@@ -104,6 +104,7 @@ int main(void) {
                 setup = true;
                 bool setUpComplete = false;
                 cout << "Currently on setup mode" << endl;
+                cout << board;
                 while (cin >> command) {
                     switch (convertCommand(command)) {
                         case Command::ADD_PIECE: { // add a piece to the board
@@ -111,12 +112,14 @@ int main(void) {
                             string position;
                             if (cin >> pieceType && cin >> position) {
                                 board.addPiece(pieceType, position);
+                                cout << board;
                             }
                             break;
                         }
                         case Command::REMOVE_PIECE: { // remove a piece from the board
                             string position;
                             if (cin >> position) board.removePiece(position);
+                            cout << board;
                             break;
                         }
                         case Command::CHANGE_PLAYER: { // change player
@@ -130,6 +133,8 @@ int main(void) {
                         case Command::DONE: { // leave setup mode
                             if (board.isValidBoard()) {
                                 setUpComplete = true;
+                                cout << board;
+                                break;
                             } else {
                                 cout << "The board is invalid. Please change your configurations." << endl;
                             }

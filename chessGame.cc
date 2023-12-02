@@ -48,66 +48,26 @@ void ChessGame::makeAMove(std::string initial, std::string dest) {
     ChessColour colour = whiteTurn ? ChessColour::White : ChessColour::Black;
     ChessSquare source = convertPosition(initial);
     ChessSquare destination = convertPosition(dest);
-    ChessPiece initialPiece = board.getPiece(source.getRow(), source.getColumn());
-    ChessPiece targetPiece = board.getPiece(destination.getRow(), destination.getColumn());
 
     bool validMove;
     bool validPath;
 
-    if (initialPiece.getType() == ChessType::Empty) {
-        validMove = false;
-        validPath = false;
-    } 
-    else if (initialPiece.getType() == ChessType::Pawn) {
-        Pawn p {initialPiece.getColour(), initialPiece.getCoords()};
-        if (initialPiece.hasMoved()) p.setMoved(true);
-        validMove = p.isValidMove(targetPiece);
-        validPath = board.isValidPath(p, targetPiece);
-    }
-    else if (initialPiece.getType() == ChessType::King) {
-        King k {initialPiece.getColour(), initialPiece.getCoords()};
-        if (initialPiece.hasMoved()) k.setMoved(true);
-        validMove = k.isValidMove(targetPiece);
-        validPath = board.isValidPath(k, targetPiece);
-    }
-    else if (initialPiece.getType() == ChessType::Knight) {
-        Knight n {initialPiece.getColour(), initialPiece.getCoords()};
-        if (initialPiece.hasMoved()) n.setMoved(true);
-        validMove = n.isValidMove(targetPiece);
-        validPath = board.isValidPath(n, targetPiece);
-    }
-    else if (initialPiece.getType() == ChessType::Bishop) {
-        Bishop b {initialPiece.getColour(), initialPiece.getCoords()};
-        if (initialPiece.hasMoved()) b.setMoved(true);
-        validMove = b.isValidMove(targetPiece);
-        validPath = board.isValidPath(b, targetPiece);
-    }
-    else if (initialPiece.getType() == ChessType::Rook) {
-        Rook r {initialPiece.getColour(), initialPiece.getCoords()};
-        if (initialPiece.hasMoved()) r.setMoved(true);
-        validMove = r.isValidMove(targetPiece);
-        validPath = board.isValidPath(r, targetPiece);
-    }
-    else if (initialPiece.getType() == ChessType::Queen) {
-        Queen q {initialPiece.getColour(), initialPiece.getCoords()};
-        if (initialPiece.hasMoved()) q.setMoved(true);
-        validMove = q.isValidMove(targetPiece);
-        validPath = board.isValidPath(q, targetPiece);
-    }
-
-    if (!validMove || !validPath) {
+   
+    if (!board.isValidMove(source, destination, colour) || !board.isValidPath(source, destination)) {
         textDisplay->outputInvalidMove();
         return;
     }
 
     ChessBoard temp = board;
-    temp.chessMove(initialPiece.getCoords(), targetPiece.getCoords());
+    temp.chessMove(source, destination);
     if (temp.kingIsUnderAttack(colour)) {
         textDisplay->outputInvalidMove();
         return;
     }
 
     // if approved, add move to moveLog and make a chess move
+    ChessPiece initialPiece = board.getPiece(source.getRow(), source.getColumn());
+    ChessPiece targetPiece = board.getPiece(destination.getRow(), destination.getColumn());
     ChessMove move {initialPiece, targetPiece};
     moveLog.emplace_back(move);
     board.chessMove(initialPiece.getCoords(), targetPiece.getCoords());
@@ -120,28 +80,28 @@ void ChessGame::makeAMove(std::string initial, std::string dest) {
     cout << *textDisplay;
     whiteTurn = whiteTurn ? false : true;
 
-/*
+
     // evaluate checkmate/check/stalemate
     colour = whiteTurn ? ChessColour::White : ChessColour::Black;
     bool isChecked = board.kingIsUnderAttack(colour);
+
     if (!board.validMoveExist(colour)) {
         if (isChecked) {
             isWon = true;
             isWhiteWin = !whiteTurn;
-            textDisplay.outputCheckmate(whiteTurn);
+            textDisplay->outputCheckmate(whiteTurn);
             return;
         }
         else {
             isWon = true;
             isStalemate = true;
-            textDisplay.outputStalemate();
+            textDisplay->outputStalemate();
             return;
         }
     }
     if (isChecked) {
-        textDisplay.outputCheck(whiteTurn);
+        textDisplay->outputCheck(whiteTurn);
     }
-*/
     // output turn
     textDisplay->outputTurn(whiteTurn);
 }

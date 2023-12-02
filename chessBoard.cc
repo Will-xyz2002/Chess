@@ -129,13 +129,17 @@ bool ChessBoard::kingIsUnderAttack(ChessColour colour) {
     if (colour == ChessColour::White) {
         for (int r = 0; r < BOARD_DIMENSION; ++r) {
             for (int c = 0; c < BOARD_DIMENSION; ++c) {
-                if (board[r][c].getColour() == opponent && isUnderAttack(*whiteKing, board[r][c])) return true;
+                ChessSquare king = whiteKing->getCoords();
+                ChessSquare opponent_square{r, c};
+                if (board[r][c].getColour() == opponent && isUnderAttack(king, opponent_square)) return true;
             }
         }
     } else if (colour == ChessColour::Black) {
         for (int r = 0; r < BOARD_DIMENSION; ++r) {
             for (int c = 0; c < BOARD_DIMENSION; ++c) {
-                if (board[r][c].getColour() == opponent && isUnderAttack(*blackKing, board[r][c])) return true;
+                ChessSquare king = blackKing->getCoords();
+                ChessSquare opponent_square{r, c};
+                if (board[r][c].getColour() == opponent && isUnderAttack(king, opponent_square)) return true;
             }
         }
     }
@@ -143,20 +147,91 @@ bool ChessBoard::kingIsUnderAttack(ChessColour colour) {
 }                 
     
 
-bool ChessBoard::isValidMove(ChessPiece &initial, ChessPiece &dest, ChessColour turn) {
-    if (initial.getColour() != turn) return false;
-    if (initial.getColour() == dest.getColour()) return false;
-    if (initial.isValidMove(dest)) return true;
-    // edge cases: en passant, castling
+bool ChessBoard::isValidMove(ChessSquare &initial, ChessSquare &dest, ChessColour turn) {
+    ChessPiece source = board[initial.getRow()][initial.getColumn()];
+    ChessPiece destination = board[dest.getRow()][dest.getColumn()];
 
-    if (initial.getType() == ChessType::King) return isCastlingPossible(initial, dest);
-    if (initial.getType() == ChessType::Pawn) return isEnPassantPossible(initial, dest);
+    if (source.getColour() != turn) return false;
+    if (source.getColour() == destination.getColour()) return false;
+
+    bool validMove;
+    if (source.getType() == ChessType::Empty) {
+        validMove = false;
+    }
+    else if (source.getType() == ChessType::Rook) {
+        Rook r {source.getColour(), source.getCoords()};
+        if (source.hasMoved()) r.setMoved(true);
+        validMove = r.isValidMove(destination);
+    }
+    else if (source.getType() == ChessType::Pawn) {
+        Pawn p {source.getColour(), source.getCoords()};
+        if (source.hasMoved()) p.setMoved(true);
+        validMove = p.isValidMove(destination);
+    }
+    else if (source.getType() == ChessType::Bishop) {
+        Bishop b {source.getColour(), source.getCoords()};
+        if (source.hasMoved()) b.setMoved(true);
+        validMove = b.isValidMove(destination);
+    }
+    else if (source.getType() == ChessType::Knight) {
+        Knight n {source.getColour(), source.getCoords()};
+        if (source.hasMoved()) n.setMoved(true);
+        validMove = n.isValidMove(destination);
+    }
+    else if (source.getType() == ChessType::Queen) {
+        Queen q {source.getColour(), source.getCoords()};
+        if (source.hasMoved()) q.setMoved(true);
+        validMove = q.isValidMove(destination);
+    }
+    else if (source.getType() == ChessType::King) {
+        King k {source.getColour(), source.getCoords()};
+        if (source.hasMoved()) k.setMoved(true);
+        validMove = k.isValidMove(destination);
+    }
+
+    if (validMove) return true;
+    if (source.getType() == ChessType::King) return isCastlingPossible(initial, dest);
+    if (source.getType() == ChessType::Pawn) return isEnPassantPossible(initial, dest);
     return false;
 }       
 
 
-bool ChessBoard::isValidPath(ChessPiece &initial, ChessPiece &dest) {
-    std::vector<ChessSquare> path = initial.generatePath(dest);
+bool ChessBoard::isValidPath(ChessSquare &initial, ChessSquare &dest) {
+    ChessPiece source = board[initial.getRow()][initial.getColumn()];
+    ChessPiece destination = board[dest.getRow()][dest.getColumn()];
+    std::vector<ChessSquare> path;
+
+    if (source.getType() == ChessType::Empty) {
+        Empty e {source.getCoords()};
+        path = e.generatePath(destination);
+    }
+    else if (source.getType() == ChessType::Rook) {
+        Rook r {source.getColour(), source.getCoords()};
+        path = r.generatePath(destination);
+    }
+    else if (source.getType() == ChessType::Pawn) {
+        Pawn p {source.getColour(), source.getCoords()};
+        path = p.generatePath(destination);
+    }
+    else if (source.getType() == ChessType::Bishop) {
+        Bishop b {source.getColour(), source.getCoords()};
+        path = b.generatePath(destination);
+    }
+    else if (source.getType() == ChessType::Knight) {
+        Knight n {source.getColour(), source.getCoords()};
+        path = n.generatePath(destination);
+    }
+    else if (source.getType() == ChessType::Queen) {
+        Queen q {source.getColour(), source.getCoords()};
+        path = q.generatePath(destination);
+    }
+    else if (source.getType() == ChessType::King) {
+        King k {source.getColour(), source.getCoords()};
+        path = k.generatePath(destination);
+    }
+
+
+
     int length = path.size();
     if (length == 0) return true;
     int r, c;
@@ -180,8 +255,8 @@ void ChessBoard::chessMove(ChessSquare initial, ChessSquare dest) {
     board[finalRow][finalCol].setMoved(true);
 
     if (board[finalRow][finalCol].getType() == ChessType::King) {
-        if (board[finalRow][finalCol].getColour() == ChessColour::White) whiteKing->setCoords(finalRow, finalCol);
-        else blackKing->setCoords(finalRow, finalCol);
+        if (board[finalRow][finalCol].getColour() == ChessColour::White) whiteKing = &board[finalRow][finalCol];
+        else blackKing = &board[finalRow][finalCol];
     }
     board[currentRow][currentCol] = Empty {{currentRow, currentCol}};
 
@@ -253,11 +328,23 @@ void ChessBoard::notifyObservers(ChessPiece &piece) {
     }
 }
 
+std::ostream &operator<<(ostream &out, ChessBoard &b) {
+    for (int r = 0; r < BOARD_DIMENSION; ++r) {
+        for (int c = 0; c < BOARD_DIMENSION; ++c) {
+            out << b.board[r][c].getDisplay();
+        }
+        out << endl;
+    }
+    return out;
+}
+
+
 
 
 // PRIVATE METHODS
-bool ChessBoard::isUnderAttack(ChessPiece &target, ChessPiece &piece) {
-    return isValidMove(piece, target, piece.getColour()) &&
+bool ChessBoard::isUnderAttack(ChessSquare &target, ChessSquare &piece) {
+    ChessColour colour = board[piece.getRow()][piece.getColumn()].getColour();
+    return isValidMove(piece, target, colour) &&
            isValidPath(piece, target);
 }
 
@@ -271,15 +358,17 @@ bool ChessBoard::validMoveExist(ChessColour colour) {
     }
     int length = allPieces.size();
     for (int i = 0; i < length; i++) {
-        if (validMoveExist(allPieces[i])) return true;
+        if (validMoveExist(allPieces[i].getCoords())) return true;
     }
     return false;
 }
 
-bool ChessBoard::validMoveExist(ChessPiece &piece) {
+bool ChessBoard::validMoveExist(ChessSquare piece) {
     for (int r = 0; r < BOARD_DIMENSION; ++r) {
         for (int c = 0; c < BOARD_DIMENSION; ++c) {
-            if (isValidMove(piece, board[r][c], piece.getColour()) && isValidPath(piece, board[r][c])) return true;
+            ChessSquare square {r, c};
+            if (isValidMove(piece, square, board[piece.getRow()][piece.getColumn()].getColour()) && 
+                isValidPath(piece, square)) return true;
         }
     }
     return false;
@@ -312,10 +401,10 @@ void ChessBoard::pawnPromotion(int row, int column, ChessColour colour) {
 }
 
 
-bool ChessBoard::isCastlingPossible(ChessPiece &initial, ChessPiece &dest) {
+bool ChessBoard::isCastlingPossible(ChessSquare &initial, ChessSquare &dest) {
     return false;
 }
 
-bool ChessBoard::isEnPassantPossible(ChessPiece &initial, ChessPiece &dest) {
+bool ChessBoard::isEnPassantPossible(ChessSquare &initial, ChessSquare &dest) {
     return false;
 }
