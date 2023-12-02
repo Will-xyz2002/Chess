@@ -304,8 +304,6 @@ bool ChessBoard::isValidBoard() {
         blackKing = nullptr;
         return false;
     }
-    cout << whiteKing->getCoords().getRow() << whiteKing->getCoords().getColumn() << endl;
-    cout << blackKing->getCoords().getRow() << blackKing->getCoords().getColumn() << endl;
     return true; // the board is valid
 }
 

@@ -80,15 +80,19 @@ void ChessGame::makeAMove(std::string initial, std::string dest) {
     if (targetPiece.getCoords().getRow() == 0 && 
         targetPiece.getColour() == ChessColour::White &&
         targetPiece.getType() == ChessType::Pawn) {
+
         board.pawnPromotion(targetPiece.getCoords().getRow(), targetPiece.getCoords().getColumn(), ChessColour::White);
+        targetPiece = board.getPiece(destination.getRow(), destination.getColumn());
     }
 
     else if (targetPiece.getCoords().getRow() == 7 && 
         targetPiece.getColour() == ChessColour::Black &&
         targetPiece.getType() == ChessType::Pawn) {
         board.pawnPromotion(targetPiece.getCoords().getRow(), targetPiece.getCoords().getColumn(), ChessColour::Black);
+        targetPiece = board.getPiece(destination.getRow(), destination.getColumn());
     }
 
+    
     textDisplay->notify(initialPiece); // notify the text display to change
     textDisplay->notify(targetPiece);
 
