@@ -133,7 +133,6 @@ int main(void) {
                         case Command::DONE: { // leave setup mode
                             if (board.isValidBoard()) {
                                 setUpComplete = true;
-                                setup = false;
                                 break;
                             } else {
                                 cout << "The board is invalid. Please change your configurations." << endl;

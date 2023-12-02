@@ -392,7 +392,8 @@ bool ChessBoard::validMoveExist(ChessSquare piece) {
 
 void ChessBoard::pawnPromotion(int row, int column, ChessColour colour) {
     char pieceType;
-    while (cin >> pieceType) {
+    do {
+        cin >> pieceType;
         pieceType = toupper(pieceType);
         if (pieceType == 'Q') {
             board[row][column] = Queen{colour, {row, column}};
@@ -413,7 +414,7 @@ void ChessBoard::pawnPromotion(int row, int column, ChessColour colour) {
         else {
             cout << "Invalid promotion piece. Please enter again." << endl;
         }
-    }
+    } while (true);
 }
 
 
