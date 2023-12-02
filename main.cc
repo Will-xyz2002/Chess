@@ -2,6 +2,7 @@
 #include "chessBoard.h"
 #include "humanPlayer.h"
 #include "computerPlayer.h"
+#include "scoreBoard.h"
 #include <iostream>
 #include <string>
 #include <memory>
@@ -48,6 +49,7 @@ bool assignPlayer(string p, unique_ptr<Player> &player, ChessColour colour) {
 int main(void) {
     string command;
     unique_ptr <ChessGame> game = nullptr;
+    unique_ptr <ScoreBoard> score = make_unique<ScoreBoard>();
     ChessBoard board;
     bool isWhiteTurn = true;
     bool gameIsOn = false;
@@ -87,6 +89,16 @@ int main(void) {
                     game->makeAMove(initial, dest);
                 }
                 if (game->gameWon()) {
+                    if(game->isStalemated()){
+                        score->add_both();
+                    }
+                    else if(!game->isWhiteTurn()){
+                        // game done by a checkmate, when the colour has the turn lost
+                        score->white_won();
+                    }
+                    else{
+                        score->black_won();
+                    }
                     board.emptyBoard();
                     isWhiteTurn = true;
                     setup = false;
@@ -96,6 +108,14 @@ int main(void) {
             }
             case Command::RESIGN: { // game resign
                 if (gameIsOn) {
+                    // who resign has the turn
+                    if(game->isWhiteTurn()){
+                        // white lost
+                        score->black_won();
+                    }
+                    else{
+                        score->white_won();
+                    }
                     game->resign();
                     gameIsOn = false;
                 }
@@ -153,5 +173,6 @@ int main(void) {
             }
         }
     }
+    score->printScore();
 }
 

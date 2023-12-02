@@ -22,6 +22,7 @@ public:
     ChessGame(ChessBoard board, bool whiteTurn, Player p1, Player p2);
     ~ChessGame();
     bool isWhiteTurn();
+    bool isStalemated();
     bool gameWon();
     void makeAMove(std::string initial, std::string dest); // for human player
     void makeAMove();                                      // for computer player
