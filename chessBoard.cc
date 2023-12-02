@@ -329,12 +329,23 @@ void ChessBoard::notifyObservers(ChessPiece &piece) {
 }
 
 std::ostream &operator<<(ostream &out, ChessBoard &b) {
+    int column = 8;
+    char row = 'a';
     for (int r = 0; r < BOARD_DIMENSION; ++r) {
+        out << column << ' ';
         for (int c = 0; c < BOARD_DIMENSION; ++c) {
             out << b.board[r][c].getDisplay();
         }
         out << endl;
+        column -= 1;
     }
+    out << endl;
+    out << ' ' << ' ';
+    for (int r = 0; r < BOARD_DIMENSION; ++r) {
+        out << row;
+        row += 1;
+    }
+    out << endl;
     return out;
 }
 

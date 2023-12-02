@@ -59,11 +59,22 @@ void TextDisplay::outputCheck(bool whiteTurn) {
 }
 
 std::ostream &operator<<(std::ostream &out, TextDisplay t) {
+    int column = 8;
+    char row = 'a';
     for (int r = 0; r < BOARD_DIMENSION; ++r) {
+        out << column << ' ';
         for (int c = 0; c < BOARD_DIMENSION; ++c) {
             out << t.display[r][c];
         }
         out << endl;
+        column -= 1;
     }
+    out << endl;
+    out << ' ' << ' ';
+    for (int r = 0; r < BOARD_DIMENSION; ++r) {
+        out << row;
+        row += 1;
+    }
+    out << endl;
     return out;
 }
