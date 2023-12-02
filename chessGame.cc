@@ -3,23 +3,27 @@
 
 // -- INPUT CHECK ----
 bool checkValidColumn(std::string position) {
-    return (position[0] < 'a' || position[0] > 'h');
+    return !(position[0] < 'a' || position[0] > 'h');
 }
 
 bool checkValidRow(std::string position) {
-    return (position[1] < '1' || position[1] > '8');
+    return !(position[1] < '1' || position[1] > '8');
 }
 // ----------------
 
 ChessGame::ChessGame(ChessBoard board, bool whiteTurn, Player p1, Player p2): 
                     board{board}, whiteTurn{whiteTurn}, p1{p1}, p2{p2} {
-    
-    textDisplay.setBoard(board);
+                        
+    textDisplay = new TextDisplay();
+    textDisplay->setBoard(board);
     board.attach(textDisplay);
-    cout << textDisplay;
-    textDisplay.outputTurn(whiteTurn);
+    cout << *textDisplay;
+    textDisplay->outputTurn(whiteTurn);
 }
 
+ChessGame::~ChessGame() {
+    delete textDisplay;
+}
 
 bool ChessGame::isWhiteTurn() { return whiteTurn; }
 bool ChessGame::gameWon() { return isWon; }
@@ -28,15 +32,15 @@ bool ChessGame::gameWon() { return isWon; }
 void ChessGame::makeAMove(std::string initial, std::string dest) {
     // Checking input - valid location on the chessBoard
     if (initial.length() != 2 || dest.length() != 2) {
-        textDisplay.outputInvalidPiece();
+        textDisplay->outputInvalidPiece();
         return;
     }
     if (!checkValidColumn(initial) || !checkValidColumn(dest)) {
-        textDisplay.outputInvalidColumn();
+        textDisplay->outputInvalidColumn();
         return;
     }
     if (!checkValidRow(initial) || !checkValidRow(dest)) {
-        textDisplay.outputInvalidRow();
+        textDisplay->outputInvalidRow();
         return;
     }
 
@@ -47,15 +51,59 @@ void ChessGame::makeAMove(std::string initial, std::string dest) {
     ChessPiece initialPiece = board.getPiece(source.getRow(), source.getColumn());
     ChessPiece targetPiece = board.getPiece(destination.getRow(), destination.getColumn());
 
-    if (!board.isValidMove(initialPiece, targetPiece, colour) || !board.isValidPath(initialPiece, targetPiece)) {
-        textDisplay.outputInvalidMove();
+    bool validMove;
+    bool validPath;
+
+    if (initialPiece.getType() == ChessType::Empty) {
+        validMove = false;
+        validPath = false;
+    } 
+    else if (initialPiece.getType() == ChessType::Pawn) {
+        Pawn p {initialPiece.getColour(), initialPiece.getCoords()};
+        if (initialPiece.hasMoved()) p.setMoved(true);
+        validMove = p.isValidMove(targetPiece);
+        validPath = board.isValidPath(p, targetPiece);
+    }
+    else if (initialPiece.getType() == ChessType::King) {
+        King k {initialPiece.getColour(), initialPiece.getCoords()};
+        if (initialPiece.hasMoved()) k.setMoved(true);
+        validMove = k.isValidMove(targetPiece);
+        validPath = board.isValidPath(k, targetPiece);
+    }
+    else if (initialPiece.getType() == ChessType::Knight) {
+        Knight n {initialPiece.getColour(), initialPiece.getCoords()};
+        if (initialPiece.hasMoved()) n.setMoved(true);
+        validMove = n.isValidMove(targetPiece);
+        validPath = board.isValidPath(n, targetPiece);
+    }
+    else if (initialPiece.getType() == ChessType::Bishop) {
+        Bishop b {initialPiece.getColour(), initialPiece.getCoords()};
+        if (initialPiece.hasMoved()) b.setMoved(true);
+        validMove = b.isValidMove(targetPiece);
+        validPath = board.isValidPath(b, targetPiece);
+    }
+    else if (initialPiece.getType() == ChessType::Rook) {
+        Rook r {initialPiece.getColour(), initialPiece.getCoords()};
+        if (initialPiece.hasMoved()) r.setMoved(true);
+        validMove = r.isValidMove(targetPiece);
+        validPath = board.isValidPath(r, targetPiece);
+    }
+    else if (initialPiece.getType() == ChessType::Queen) {
+        Queen q {initialPiece.getColour(), initialPiece.getCoords()};
+        if (initialPiece.hasMoved()) q.setMoved(true);
+        validMove = q.isValidMove(targetPiece);
+        validPath = board.isValidPath(q, targetPiece);
+    }
+
+    if (!validMove || !validPath) {
+        textDisplay->outputInvalidMove();
         return;
     }
 
     ChessBoard temp = board;
     temp.chessMove(initialPiece.getCoords(), targetPiece.getCoords());
     if (temp.kingIsUnderAttack(colour)) {
-        textDisplay.outputInvalidMove();
+        textDisplay->outputInvalidMove();
         return;
     }
 
@@ -63,9 +111,16 @@ void ChessGame::makeAMove(std::string initial, std::string dest) {
     ChessMove move {initialPiece, targetPiece};
     moveLog.emplace_back(move);
     board.chessMove(initialPiece.getCoords(), targetPiece.getCoords());
-    cout << textDisplay;
+
+    initialPiece = board.getPiece(source.getRow(), source.getColumn());
+    targetPiece = board.getPiece(destination.getRow(), destination.getColumn());
+    textDisplay->notify(initialPiece);
+    textDisplay->notify(targetPiece);
+
+    cout << *textDisplay;
     whiteTurn = whiteTurn ? false : true;
 
+/*
     // evaluate checkmate/check/stalemate
     colour = whiteTurn ? ChessColour::White : ChessColour::Black;
     bool isChecked = board.kingIsUnderAttack(colour);
@@ -86,9 +141,9 @@ void ChessGame::makeAMove(std::string initial, std::string dest) {
     if (isChecked) {
         textDisplay.outputCheck(whiteTurn);
     }
-
+*/
     // output turn
-    textDisplay.outputTurn(whiteTurn);
+    textDisplay->outputTurn(whiteTurn);
 }
 
 
@@ -104,20 +159,20 @@ void ChessGame::makeAMove() {
         if (isChecked) {
             isWon = true;
             isWhiteWin = !whiteTurn;
-            textDisplay.outputCheckmate(whiteTurn);
+            textDisplay->outputCheckmate(whiteTurn);
             return;
         }
         else {
             isWon = true;
             isStalemate = true;
-            textDisplay.outputStalemate();
+            textDisplay->outputStalemate();
             return;
         }
     }
     if (isChecked) {
-        textDisplay.outputCheck(whiteTurn);
+        textDisplay->outputCheck(whiteTurn);
     }
-    textDisplay.outputTurn(whiteTurn);
+    textDisplay->outputTurn(whiteTurn);
 }
 
 
@@ -129,7 +184,9 @@ void ChessGame::undo() {
     ChessPiece piece2 = move.getDest();
     board.addPiece(piece1);
     board.addPiece(piece2);
-    cout << textDisplay;
+    board.notifyObservers(piece1);
+    board.notifyObservers(piece2);
+    cout << *textDisplay;
     whiteTurn = whiteTurn ? false : true;
 }
 
@@ -137,6 +194,7 @@ void ChessGame::undo() {
 void ChessGame::resign() {
     isWon = true;
     isWhiteWin = !whiteTurn;
+    textDisplay->outputCheckmate(whiteTurn);
 }
 
 

@@ -94,7 +94,7 @@ int main(void) {
                 break;
             }
             case Command::RESIGN: { // game resign
-                if (!gameIsOn) {
+                if (gameIsOn) {
                     game->resign();
                     gameIsOn = false;
                 }

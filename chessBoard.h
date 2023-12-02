@@ -9,7 +9,6 @@
 #include "rook.h"
 #include "bishop.h"
 #include "empty.h"
-#include "textDisplay.h"
 #include <memory>
 #include <string>
 
@@ -19,8 +18,8 @@ ChessSquare convertPosition(string position);
 
 class ChessBoard {
     std::vector<std::vector<ChessPiece>> board;
-    std::unique_ptr <King> whiteKing = nullptr;
-    std::unique_ptr <King> blackKing = nullptr;
+    ChessPiece *whiteKing = nullptr;
+    ChessPiece *blackKing = nullptr;
     std::vector<Observer*> observers;
 
     bool isUnderAttack(ChessPiece &target, ChessPiece &piece);
@@ -49,7 +48,7 @@ public:
                                                                                 // existing move available in colour side
 
     
-    void attach(Observer &o);
+    void attach(Observer *o);
     void notifyObservers(ChessPiece &piece);
 };
 

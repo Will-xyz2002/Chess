@@ -1,5 +1,6 @@
 #include "chessBoard.h"
 #include <sstream>
+#include <iostream>
 
 // convertPosition(position) convert string representation of the chess location
 // (eg. e4) to chessSquare coordinate (eg. {7, 4})
@@ -31,8 +32,8 @@ ChessBoard::ChessBoard() {
 ChessBoard::ChessBoard(const ChessBoard &other) {
     board = other.board;
     observers = other.observers;
-    whiteKing = make_unique<King>(other.whiteKing);
-    blackKing = make_unique<King>(other.blackKing);
+    whiteKing = other.whiteKing;
+    blackKing = other.blackKing;
 }
     
 ChessPiece ChessBoard::getPiece(int row, int column) { return board[row][column]; }
@@ -47,7 +48,7 @@ void ChessBoard::init() {
     board[0][4] = King   {ChessColour::Black, {0, 4}};
     board[0][5] = Bishop {ChessColour::Black, {0, 5}};
     board[0][6] = Knight {ChessColour::Black, {0, 6}};
-    board[0][7] = Knight {ChessColour::Black, {0, 7}};
+    board[0][7] = Rook {ChessColour::Black, {0, 7}};
 
     // second to seventh row
     for (int c = 0; c < BOARD_DIMENSION; ++c) {
@@ -67,13 +68,10 @@ void ChessBoard::init() {
     board[7][4] = King   {ChessColour::White, {7, 4}};
     board[7][5] = Bishop {ChessColour::White, {7, 5}};
     board[7][6] = Knight {ChessColour::White, {7, 6}};
-    board[7][7] = Knight {ChessColour::White, {7, 7}};
+    board[7][7] = Rook {ChessColour::White, {7, 7}};
 
-    if (blackKing != nullptr) blackKing.reset();
-    if (whiteKing != nullptr) whiteKing.reset();
-
-    blackKing = make_unique<King>(board[0][4]);
-    whiteKing = make_unique<King>(board[7][4]);
+    blackKing = &board[0][4];
+    whiteKing = &board[7][4];
 
     for (int r = 0; r < BOARD_DIMENSION; ++r) {
         for (int c = 0; c < BOARD_DIMENSION; ++c) {
@@ -101,6 +99,19 @@ void ChessBoard::addPiece(char pieceType, std::string position) {
     else if (pieceType == 'K') board[r][c] = King{ChessColour::White, location};
     notifyObservers(board[r][c]);
 }
+
+void ChessBoard::addPiece(ChessPiece &piece) {
+    int r = piece.getCoords().getRow();
+    int c = piece.getCoords().getColumn();
+    if (piece.getType() == ChessType::Pawn) board[r][c] = Pawn{piece.getColour(), {r, c}};
+    else if (piece.getType() == ChessType::Rook) board[r][c] = Rook{piece.getColour(), {r, c}};
+    else if (piece.getType() == ChessType::Knight) board[r][c] = Knight{piece.getColour(), {r, c}};
+    else if (piece.getType() == ChessType::Bishop) board[r][c] = Bishop{piece.getColour(), {r, c}};
+    else if (piece.getType() == ChessType::Queen) board[r][c] = Queen{piece.getColour(), {r, c}};
+    else if (piece.getType() == ChessType::King) board[r][c] = King{piece.getColour(), {r, c}};
+    else if (piece.getType() == ChessType::Empty) board[r][c] = Empty{{r, c}};
+}
+
 
 void ChessBoard::removePiece(std::string position) {
     ChessSquare location = convertPosition(position);
@@ -163,8 +174,11 @@ void ChessBoard::chessMove(ChessSquare initial, ChessSquare dest) {
     int currentCol = initial.getColumn();
     int finalRow = dest.getRow();
     int finalCol = dest.getColumn();
+
     board[finalRow][finalCol] = board[currentRow][currentCol];
     board[finalRow][finalCol].setCoords(finalRow, finalCol);
+    board[finalRow][finalCol].setMoved(true);
+
     if (board[finalRow][finalCol].getType() == ChessType::King) {
         if (board[finalRow][finalCol].getColour() == ChessColour::White) whiteKing->setCoords(finalRow, finalCol);
         else blackKing->setCoords(finalRow, finalCol);
@@ -180,9 +194,6 @@ void ChessBoard::chessMove(ChessSquare initial, ChessSquare dest) {
         board[finalRow][finalCol].getType() == ChessType::Pawn) {
         pawnPromotion(finalRow, finalCol, ChessColour::Black);
     }
-
-    notifyObservers(board[currentRow][currentCol]);
-    notifyObservers(board[finalRow][finalCol]);
 } 
 
 bool ChessBoard::isValidBoard() {
@@ -202,40 +213,38 @@ bool ChessBoard::isValidBoard() {
                     whiteKingPos.setCoords(r, c);
                 }
                 else {
-                    blackKingCount +=1;
+                    blackKingCount += 1;
                     blackKingPos.setCoords(r, c);
                 }
             }
         }
     }
     if (whiteKingCount != 1 || blackKingCount != 1) return false;
-    if (whiteKing != nullptr) whiteKing.reset();
-    if (blackKing != nullptr) blackKing.reset();
-    whiteKing = make_unique<King>(ChessColour::White, whiteKingPos);
-    blackKing = make_unique<King>(ChessColour::Black, blackKingPos);
+    whiteKing = &board[whiteKingPos.getRow()][whiteKingPos.getColumn()];
+    blackKing = &board[blackKingPos.getRow()][blackKingPos.getColumn()];
     if (kingIsUnderAttack(ChessColour::White) || kingIsUnderAttack(ChessColour::Black)) return false;
     return true;
 }
 
 void ChessBoard::emptyBoard() {
     board.clear();
-    whiteKing.reset();
-    blackKing.reset();
     whiteKing = nullptr;
     blackKing = nullptr;
     std::vector<ChessPiece> row;
     for (int r = 0; r < BOARD_DIMENSION; ++r) {
         for (int c = 0; c < BOARD_DIMENSION; ++c) {
             row.emplace_back(Empty{{r, c}});
+            notifyObservers(board[r][c]);
         }
         board.emplace_back(row);
         row.clear();
     }
 }
 
-void ChessBoard::attach(Observer &o) {
+void ChessBoard::attach(Observer *o) {
     observers.emplace_back(o);
 }
+
 
 void ChessBoard::notifyObservers(ChessPiece &piece) {
     int length = observers.size();
