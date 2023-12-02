@@ -154,7 +154,7 @@ void ChessGame::undo() {
 void ChessGame::resign() {
     isWon = true;
     isWhiteWin = !whiteTurn;
-    textDisplay->outputCheckmate(whiteTurn);
+    textDisplay->outputResign(whiteTurn);
 }
 
 

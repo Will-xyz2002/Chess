@@ -24,6 +24,7 @@ public:
     void outputCheckmate(bool whiteTurn);
     void outputStalemate();
     void outputCheck(bool whiteTurn);
+    void outputResign(bool whiteTurn);
     friend std::ostream &operator<<(std::ostream &out, TextDisplay t);
 };
 

@@ -379,7 +379,12 @@ bool ChessBoard::validMoveExist(ChessSquare piece) {
         for (int c = 0; c < BOARD_DIMENSION; ++c) {
             ChessSquare square {r, c};
             if (isValidMove(piece, square, board[piece.getRow()][piece.getColumn()].getColour()) && 
-                isValidPath(piece, square)) return true;
+                isValidPath(piece, square)) {
+                    ChessBoard temp = *this;
+                    temp.chessMove(piece, square);
+                    if (!kingIsUnderAttack(board[piece.getRow()][piece.getColumn()].getColour())) return true;
+                    
+            }
         }
     }
     return false;

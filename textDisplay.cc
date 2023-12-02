@@ -44,7 +44,7 @@ void TextDisplay::outputInvalidMove() {
 
 }
 void TextDisplay::outputCheckmate(bool whiteTurn) {
-    cout << "Checkmate!";
+    cout << "Checkmate! ";
     if (whiteTurn) cout << "Black wins!" << endl;
     else cout << "White wins!" << endl;
 }
@@ -56,6 +56,11 @@ void TextDisplay::outputStalemate() {
 void TextDisplay::outputCheck(bool whiteTurn) {
     if (whiteTurn) cout << "White is in check." << endl;
     else cout << "Black is in check." << endl;
+}
+
+void TextDisplay::outputResign(bool whiteTurn) {
+    if (whiteTurn) cout << "White resign! Black wins!" << endl;
+    else cout << "Black resign! White wins!" << endl;
 }
 
 std::ostream &operator<<(std::ostream &out, TextDisplay t) {
