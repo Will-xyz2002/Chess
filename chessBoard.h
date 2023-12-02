@@ -26,7 +26,6 @@ class ChessBoard {
     bool isCastlingPossible(ChessSquare &initial, ChessSquare &dest);            // check whether the castling move can be achieved
     bool isEnPassantPossible(ChessSquare &initial, ChessSquare &dest);           // check whether the en passant move can be achieved
     bool validMoveExist(ChessSquare piece);
-    void pawnPromotion(int row, int column, ChessColour colour);               // promote pawn
 
 public:
     ChessBoard();
@@ -46,8 +45,9 @@ public:
     void emptyBoard();                                                          // make the board empty (all Empty pieces)
     bool validMoveExist(ChessColour colour);                                    // return true whenever there are any 
                                                                                 // existing move available in colour side
+                
 
-    
+    void pawnPromotion(int row, int column, ChessColour colour);               // promote pawn
     void attach(Observer *o);
     void notifyObservers(ChessPiece &piece);
     friend std::ostream &operator<<(ostream &out, ChessBoard &b);

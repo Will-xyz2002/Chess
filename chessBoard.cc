@@ -82,9 +82,11 @@ void ChessBoard::init() {
 
 
 void ChessBoard::addPiece(char pieceType, std::string position) {
-    ChessSquare location = convertPosition(position);
+    ChessSquare location = convertPosition(position); // convert user input to chessSquare
     int r = location.getRow();
     int c = location.getColumn(); 
+
+    // add piece accordingly
     if (pieceType == 'r') board[r][c] = Rook{ChessColour::Black, location};
     else if (pieceType == 'R') board[r][c] = Rook{ChessColour::White, location};
     else if (pieceType == 'n') board[r][c] = Knight{ChessColour::Black, location};
@@ -117,7 +119,7 @@ void ChessBoard::removePiece(std::string position) {
     ChessSquare location = convertPosition(position);
     int r = location.getRow();
     int c = location.getColumn();
-    if (!board[r][c].isEmpty()) {
+    if (!board[r][c].isEmpty()) { // removePiece only occur when the piece is not empty
         board[r][c] = Empty {{r, c}};
         notifyObservers(board[r][c]);
     }
@@ -125,22 +127,15 @@ void ChessBoard::removePiece(std::string position) {
 
 
 bool ChessBoard::kingIsUnderAttack(ChessColour colour) {
+    // get what piece colour is attacking the king, and the king's location
     ChessColour opponent = (colour == ChessColour::White) ? ChessColour::Black : ChessColour::White;
-    if (colour == ChessColour::White) {
-        for (int r = 0; r < BOARD_DIMENSION; ++r) {
-            for (int c = 0; c < BOARD_DIMENSION; ++c) {
-                ChessSquare king = whiteKing->getCoords();
-                ChessSquare opponent_square{r, c};
-                if (board[r][c].getColour() == opponent && isUnderAttack(king, opponent_square)) return true;
-            }
-        }
-    } else if (colour == ChessColour::Black) {
-        for (int r = 0; r < BOARD_DIMENSION; ++r) {
-            for (int c = 0; c < BOARD_DIMENSION; ++c) {
-                ChessSquare king = blackKing->getCoords();
-                ChessSquare opponent_square{r, c};
-                if (board[r][c].getColour() == opponent && isUnderAttack(king, opponent_square)) return true;
-            }
+    ChessSquare king = (colour == ChessColour::White) ? whiteKing->getCoords() : blackKing->getCoords();
+
+    // evaluate every opponent piece, whether they can attack the player's king
+    for (int r = 0; r < BOARD_DIMENSION; ++r) {
+        for (int c = 0; c < BOARD_DIMENSION; ++c) {
+            ChessSquare opponent_square{r, c};
+            if (board[r][c].getColour() == opponent && isUnderAttack(king, opponent_square)) return true;
         }
     }
     return false;
@@ -148,12 +143,17 @@ bool ChessBoard::kingIsUnderAttack(ChessColour colour) {
     
 
 bool ChessBoard::isValidMove(ChessSquare &initial, ChessSquare &dest, ChessColour turn) {
+    // get the chessPiece that correspond to initial and destination chessSquare
     ChessPiece source = board[initial.getRow()][initial.getColumn()];
     ChessPiece destination = board[dest.getRow()][dest.getColumn()];
 
+    // if the player move a piece that is different from their color, it is invalid
     if (source.getColour() != turn) return false;
+
+    // if the initial piece and the final piece have the same color, it is invalid
     if (source.getColour() == destination.getColour()) return false;
 
+    // otherwise, evaluate valid move based on the type of initial
     bool validMove;
     if (source.getType() == ChessType::Empty) {
         validMove = false;
@@ -189,7 +189,9 @@ bool ChessBoard::isValidMove(ChessSquare &initial, ChessSquare &dest, ChessColou
         validMove = k.isValidMove(destination);
     }
 
-    if (validMove) return true;
+    if (validMove) return true; // move is valid
+
+    // exceptions: castling and en passant
     if (source.getType() == ChessType::King) return isCastlingPossible(initial, dest);
     if (source.getType() == ChessType::Pawn) return isEnPassantPossible(initial, dest);
     return false;
@@ -197,10 +199,12 @@ bool ChessBoard::isValidMove(ChessSquare &initial, ChessSquare &dest, ChessColou
 
 
 bool ChessBoard::isValidPath(ChessSquare &initial, ChessSquare &dest) {
+    // get chesspieces that correspond to the source and destination that the piece want to move to
     ChessPiece source = board[initial.getRow()][initial.getColumn()];
     ChessPiece destination = board[dest.getRow()][dest.getColumn()];
     std::vector<ChessSquare> path;
 
+    // generate path based on the type of initial
     if (source.getType() == ChessType::Empty) {
         Empty e {source.getCoords()};
         path = e.generatePath(destination);
@@ -230,8 +234,7 @@ bool ChessBoard::isValidPath(ChessSquare &initial, ChessSquare &dest) {
         path = k.generatePath(destination);
     }
 
-
-
+    // if there is no path, or the path that the piece will take has no obstacle between it, return true
     int length = path.size();
     if (length == 0) return true;
     int r, c;
@@ -250,32 +253,29 @@ void ChessBoard::chessMove(ChessSquare initial, ChessSquare dest) {
     int finalRow = dest.getRow();
     int finalCol = dest.getColumn();
 
+    // initiate the move
     board[finalRow][finalCol] = board[currentRow][currentCol];
     board[finalRow][finalCol].setCoords(finalRow, finalCol);
     board[finalRow][finalCol].setMoved(true);
 
+    // if the moving piece is the king, update the king's pointer location
     if (board[finalRow][finalCol].getType() == ChessType::King) {
         if (board[finalRow][finalCol].getColour() == ChessColour::White) whiteKing = &board[finalRow][finalCol];
         else blackKing = &board[finalRow][finalCol];
     }
+
+    // the initial square become empty after move
     board[currentRow][currentCol] = Empty {{currentRow, currentCol}};
-
-    // special case: promotion
-    if (finalRow == 0 && board[finalRow][finalCol].getColour() == ChessColour::White &&
-        board[finalRow][finalCol].getType() == ChessType::Pawn) {
-        pawnPromotion(finalRow, finalCol, ChessColour::White);
-
-    } else if (finalRow == 7 && board[finalRow][finalCol].getColour() == ChessColour::Black &&
-        board[finalRow][finalCol].getType() == ChessType::Pawn) {
-        pawnPromotion(finalRow, finalCol, ChessColour::Black);
-    }
 } 
 
 bool ChessBoard::isValidBoard() {
+    // if there are any pawns at the first or last row after setup, return false
     for (int c = 0; c < BOARD_DIMENSION; ++c) {
         if (board[0][c].getType() == ChessType::Pawn) return false;
         if (board[7][c].getType() == ChessType::Pawn) return false;
     }
+
+    // evaluate whether there is exactly one white king and one black king. If not, return false
     ChessSquare whiteKingPos {0, 0};
     ChessSquare blackKingPos {0, 0};
     int whiteKingCount = 0;
@@ -297,11 +297,20 @@ bool ChessBoard::isValidBoard() {
     if (whiteKingCount != 1 || blackKingCount != 1) return false;
     whiteKing = &board[whiteKingPos.getRow()][whiteKingPos.getColumn()];
     blackKing = &board[blackKingPos.getRow()][blackKingPos.getColumn()];
-    if (kingIsUnderAttack(ChessColour::White) || kingIsUnderAttack(ChessColour::Black)) return false;
-    return true;
+
+    // evaluate whether any king is in check. If true, return false
+    if (kingIsUnderAttack(ChessColour::White) || kingIsUnderAttack(ChessColour::Black)) {
+        whiteKing = nullptr;
+        blackKing = nullptr;
+        return false;
+    }
+    cout << whiteKing->getCoords().getRow() << whiteKing->getCoords().getColumn() << endl;
+    cout << blackKing->getCoords().getRow() << blackKing->getCoords().getColumn() << endl;
+    return true; // the board is valid
 }
 
 void ChessBoard::emptyBoard() {
+    // emptying the board and initialize the board again
     board.clear();
     whiteKing = nullptr;
     blackKing = nullptr;
@@ -328,6 +337,7 @@ void ChessBoard::notifyObservers(ChessPiece &piece) {
     }
 }
 
+// for set up only
 std::ostream &operator<<(ostream &out, ChessBoard &b) {
     int column = 8;
     char row = 'a';
@@ -351,22 +361,26 @@ std::ostream &operator<<(ostream &out, ChessBoard &b) {
 
 
 
-
+// -------------------------------
 // PRIVATE METHODS
+// -------------------------------
 bool ChessBoard::isUnderAttack(ChessSquare &target, ChessSquare &piece) {
+    // return whether it is possible for the piece to attack the target
     ChessColour colour = board[piece.getRow()][piece.getColumn()].getColour();
-    return isValidMove(piece, target, colour) &&
-           isValidPath(piece, target);
+    return isValidMove(piece, target, colour) && isValidPath(piece, target); 
 }
 
 
 bool ChessBoard::validMoveExist(ChessColour colour) {
+    // find all pieces that correspond to the colour of the player
     std::vector<ChessPiece> allPieces;
     for (int r = 0; r < BOARD_DIMENSION; ++r) {
         for (int c = 0; c < BOARD_DIMENSION; ++c) {
             if (board[r][c].getColour() == colour) allPieces.emplace_back(board[r][c]);
         }
     }
+
+    // if at least one piece has a validMove (valid movement by rule, no obstacle, king is not in check), return true
     int length = allPieces.size();
     for (int i = 0; i < length; i++) {
         if (validMoveExist(allPieces[i].getCoords())) return true;
@@ -375,6 +389,7 @@ bool ChessBoard::validMoveExist(ChessColour colour) {
 }
 
 bool ChessBoard::validMoveExist(ChessSquare piece) {
+    // evaluate whether the piece at the particular chessSquare can make a valid move
     for (int r = 0; r < BOARD_DIMENSION; ++r) {
         for (int c = 0; c < BOARD_DIMENSION; ++c) {
             ChessSquare square {r, c};
