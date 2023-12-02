@@ -407,6 +407,7 @@ void ChessBoard::pawnPromotion(int row, int column, ChessColour colour) {
     char pieceType;
     do {
         cin >> pieceType;
+        if (cin.fail()) break;
         pieceType = toupper(pieceType);
         if (pieceType == 'Q') {
             board[row][column] = Queen{colour, {row, column}};
