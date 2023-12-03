@@ -43,7 +43,7 @@ Xwindow::Xwindow(int width, int height) {
   XSetForeground(d,gc,colours[Black]);
 
   // Set up fonts.
-  const char *fontname = "6x13"; // Choose an appropriate font
+  const char *fontname = "10x20";
   XFontStruct *font = XLoadQueryFont(d, fontname);
   if (!font) {
     cerr << "Cannot load font " << fontname << endl;
@@ -71,12 +71,9 @@ Xwindow::~Xwindow() {
 void Xwindow::fillRectangle(int x, int y, int width, int height, int colour) {
   XSetForeground(d, gc, colours[colour]);
   XFillRectangle(d, w, gc, x, y, width, height);
-  XSetForeground(d, gc, colours[Black]);
 }
 
 void Xwindow::drawString(int x, int y, const char *msg, int length, int colour) {
   XSetForeground(d, gc, colours[colour]);
   XDrawString(d, w, gc, x, y, msg, length);
-  XSetForeground(d, gc, colours[Black]);
 }
-

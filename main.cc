@@ -77,7 +77,6 @@ int main(void) {
                     }
                     if (game != nullptr) game.reset();
                     game = make_unique<ChessGame>(board, isWhiteTurn, *p1, *p2);
-                    board.init();
                     gameIsOn = true;
                 }
                 break;

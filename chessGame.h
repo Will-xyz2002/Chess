@@ -11,6 +11,7 @@
 class ChessGame {
     ChessBoard board;
     std::unique_ptr<TextDisplay> textDisplay;
+    std::unique_ptr<GraphicsDisplay> graphicsDisplay;
     bool whiteTurn = true;
     bool isWhiteWin = false;
     bool isStalemate = false;
@@ -18,7 +19,6 @@ class ChessGame {
     Player p1;
     Player p2;
     std::vector<ChessMove> moveLog;
-    GraphicsDisplay *graphicsDisplay;
 
     void nextTurn();
     void movePiece(ChessSquare source, ChessSquare destination);
