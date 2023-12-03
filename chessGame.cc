@@ -1,5 +1,6 @@
 #include "chessGame.h"
 #include "chessPiece.h"
+#include "window.h"
 
 // -- INPUT CHECK ----
 bool checkValidColumn(std::string position) {
@@ -20,12 +21,17 @@ ChessGame::ChessGame(ChessBoard board, bool whiteTurn, Player p1, Player p2):
     board.attach(textDisplay);
     cout << *textDisplay;
     textDisplay->outputTurn(whiteTurn);
+
+    // Initialize graphics display and attach it to the board
+    graphicsDisplay = new GraphicsDisplay(new Xwindow(560, 560), BOARD_DIMENSION);
+    graphicsDisplay->setBoard(board);
+    board.attach(graphicsDisplay);
 }
 
 ChessGame::~ChessGame() {
     delete textDisplay;
+    delete graphicsDisplay;
 }
-
 bool ChessGame::isWhiteTurn() { return whiteTurn; }
 bool ChessGame::gameWon() { return isWon; }
 
@@ -92,9 +98,10 @@ void ChessGame::makeAMove(std::string initial, std::string dest) {
         targetPiece = board.getPiece(destination.getRow(), destination.getColumn());
     }
 
-    
     textDisplay->notify(initialPiece); // notify the text display to change
     textDisplay->notify(targetPiece);
+    graphicsDisplay->notify(initialPiece); // notify the graphics display to change
+    graphicsDisplay->notify(targetPiece);
 
     cout << *textDisplay; // output the board
     // whiteTurn changes HERE

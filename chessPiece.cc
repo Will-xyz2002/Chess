@@ -21,7 +21,7 @@ ChessPiece::ChessPiece(ChessPiece &&other)
       isMoved{other.isMoved}, empty{other.empty} {
     // Reset members of other
     other.type = ChessType::Empty;
-    other.colour = ChessColour::None;
+    other.colour = ChessColour::Nocolour;
     other.display = '\0';
     other.isMoved = false;
     other.empty = true;
@@ -54,7 +54,7 @@ ChessPiece &ChessPiece::operator=(ChessPiece &&other) {
 
         // Reset members of other
         other.type = ChessType::Empty;
-        other.colour = ChessColour::None;
+        other.colour = ChessColour::Nocolour;
         other.display = '\0'; // Default char
         other.isMoved = false;
         other.empty = true;

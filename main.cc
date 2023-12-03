@@ -3,6 +3,7 @@
 #include "humanPlayer.h"
 #include "computerPlayer.h"
 #include "scoreBoard.h"
+#include "window.h"
 #include <iostream>
 #include <string>
 #include <memory>
@@ -71,9 +72,12 @@ int main(void) {
                         cout << "Cannot assign black player. Please try again" << endl;
                         break;
                     }
-                    if (!setup) board.init();
+                    if (!setup) {
+                        board.init();
+                    }
                     if (game != nullptr) game.reset();
                     game = make_unique<ChessGame>(board, isWhiteTurn, *p1, *p2);
+                    board.init();
                     gameIsOn = true;
                 }
                 break;
