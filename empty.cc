@@ -1,6 +1,6 @@
 #include "empty.h"
 
-Empty::Empty(ChessSquare coords): ChessPiece{ChessType::Empty, ChessColour::None, coords, true} {
+Empty::Empty(ChessSquare coords): ChessPiece{ChessType::Empty, ChessColour::Nocolour, coords, true} {
     int sum = coords.getRow() + coords.getColumn();
     if (sum % 2 == 0) setDisplay(' ');
     else setDisplay('_');

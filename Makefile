@@ -1,11 +1,10 @@
 CXX = g++-11 -std=c++20
 CXXFLAGS = -Wall -g -MMD -Werror=vla # use -MMD to generate dependencies
-LIBFLAGS = -lXft -lX11   # Linker flags for Xft and X11 libraries
+LIBFLAGS = -lX11   # Linker flags for Xft and X11 libraries
 SOURCES = $(wildcard *.cc)   # list of all .cc files in the current directory
 OBJECTS = ${SOURCES:.cc=.o}  # .o files depend upon .cc files with same names
 DEPENDS = ${OBJECTS:.o=.d}   # .d file is list of dependencies for corresponding .cc file
 EXEC=chess
-
 # First target in the makefile is the default target.
 $(EXEC): $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(OBJECTS) -o $(EXEC)  $(LIBFLAGS)

@@ -19,6 +19,10 @@ class ChessGame {
     Player p1;
     Player p2;
     std::vector<ChessMove> moveLog;
+<<<<<<< HEAD
+=======
+    
+>>>>>>> main
 
     void nextTurn();
     void movePiece(ChessSquare source, ChessSquare destination);

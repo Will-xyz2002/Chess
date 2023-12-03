@@ -26,6 +26,7 @@ ChessGame::ChessGame(ChessBoard board, bool whiteTurn, Player p1, Player p2):
     textDisplay->outputTurn(whiteTurn);
 
     // Initialize graphics display and attach it to the board
+<<<<<<< HEAD
     this->graphicsDisplay = make_unique<GraphicsDisplay>(new Xwindow(560, 560), BOARD_DIMENSION);
     this->graphicsDisplay->setBoard(board);
     this->board.attach(graphicsDisplay.get());
@@ -34,6 +35,15 @@ ChessGame::ChessGame(ChessBoard board, bool whiteTurn, Player p1, Player p2):
 
 ChessGame::~ChessGame() {
 }
+=======
+    graphicsDisplay = make_unique<GraphicsDisplay>(new Xwindow(560, 560), BOARD_DIMENSION);
+    graphicsDisplay->setBoard(board);
+    this->board.attach(graphicsDisplay.get());
+}
+
+ChessGame::~ChessGame() {}
+
+>>>>>>> main
 
 bool ChessGame::isWhiteTurn() { return whiteTurn; }
 bool ChessGame::gameWon() { return isWon; }
