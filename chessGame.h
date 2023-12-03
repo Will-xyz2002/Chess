@@ -11,7 +11,7 @@
 class ChessGame {
     ChessBoard board;
     std::unique_ptr<TextDisplay> textDisplay;
-    std::unique_ptr<GraphicsDisplay> graphicsDisplay;
+    // std::unique_ptr<GraphicsDisplay> graphicsDisplay;
     bool whiteTurn = true;
     bool isWhiteWin = false;
     bool isStalemate = false;

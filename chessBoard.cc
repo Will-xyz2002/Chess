@@ -16,6 +16,28 @@ ChessSquare convertPosition(string position) {
     return {square_row, square_column};
 }
 
+
+// pawnMoveTwoForward(move) return whether the given move is a pawn moving two square forward
+bool pawnMoveTwoForward(ChessMove &move) {
+    ChessPiece initial = move.getInitial();
+    ChessPiece dest = move.getDest();
+    if (initial.getType() != ChessType::Pawn) return false;
+    if (dest.getType() != ChessType::Empty) return false;
+
+    int rowMove = 0;
+    int colMove = 0;
+
+    if (initial.getColour() == ChessColour::White) {
+        rowMove = initial.getCoords().getRow() - dest.getCoords().getRow();
+        colMove = initial.getCoords().getColumn() - dest.getCoords().getColumn();
+    }
+    else if (initial.getColour() == ChessColour::Black) {
+        rowMove = dest.getCoords().getRow() - initial.getCoords().getRow();
+        colMove = dest.getCoords().getColumn() - initial.getCoords().getColumn();
+    }
+    return (rowMove == 2 && colMove == 0);
+}
+
 // CONSTRUCTOR
 ChessBoard::ChessBoard() {
     std::vector<ChessPiece> row;
@@ -299,6 +321,34 @@ bool ChessBoard::isCastlingPossible(ChessSquare &initial, ChessSquare &dest, Che
 }
 
 
+bool ChessBoard::isEnPassantPossible(ChessSquare &initial, ChessSquare &dest, ChessMove &lastMove) {
+    // to do en passant, the pawn must attempt to do a capturing move towards an empty space
+    // assuming that we already deal with that in chessGame
+
+    ChessColour player = board[initial.getRow()][initial.getColumn()].getColour();
+    ChessColour opponent = (player == ChessColour::White) ? ChessColour::Black : ChessColour::White;
+
+    // if the piece we are attempting to capture is not an opponent pawn, it is invalid
+    if (board[initial.getRow()][dest.getColumn()].getType() != ChessType::Pawn) return false;
+    if (board[initial.getRow()][dest.getColumn()].getColour() != opponent) return false;
+
+    // evaluate the last move from the opponent
+    ChessPiece lastMovePiece = lastMove.getInitial();
+    ChessPiece lastPieceFinalLocation = lastMove.getDest();
+
+    // check if the last move from the opponent is a two square move pawn (has not moved previously), and it is the piece
+    // that we want to capture
+    if (lastMovePiece.getType() != ChessType::Pawn) return false;
+    if (lastMovePiece.hasMoved()) return false;
+    if (lastPieceFinalLocation.getCoords().getRow() != initial.getRow()) return false;
+    if (lastPieceFinalLocation.getCoords().getColumn() != dest.getColumn()) return false;
+    if (!pawnMoveTwoForward(lastMove)) return false;
+
+    // if all requirements satisfy, en passant can be performed
+    return true;
+}
+
+
 void ChessBoard::chessMove(ChessSquare initial, ChessSquare dest) {
     int currentRow = initial.getRow();
     int currentCol = initial.getColumn();
@@ -514,6 +564,30 @@ void ChessBoard::pawnPromotion(int row, int column, ChessColour colour) {
 }
 
 
-bool ChessBoard::isEnPassantPossible(ChessSquare &initial, ChessSquare &dest) {
-    return false;
+
+
+
+
+bool ChessBoard::pawnCapturingMove(ChessSquare &initial, ChessSquare &dest) {
+    int pawn_row = initial.getRow();
+    int pawn_col = initial.getColumn();
+    int target_row = dest.getRow();
+    int target_col = dest.getColumn();
+
+    int rowMove = 0;
+    int colMove = 0;
+
+    ChessColour colour = board[pawn_row][pawn_col].getColour();
+    if (colour == ChessColour::White) {
+        rowMove = pawn_row - target_row;
+        colMove = pawn_col - target_col;
+    }
+    else if (colour == ChessColour::Black) {
+        rowMove = target_row - pawn_row;
+        colMove = target_col - pawn_col;
+    }
+    if (rowMove != 1) return false;
+    if (colMove != 1 && colMove != -1) return false;
+    return true;
 }
+

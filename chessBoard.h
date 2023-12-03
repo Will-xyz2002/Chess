@@ -1,6 +1,7 @@
 #ifndef CHESS_BOARD_H
 #define CHESS_BOARD_H
 #include "chessPiece.h"
+#include "chessMove.h"
 #include "observer.h"
 #include "king.h"
 #include "knight.h"
@@ -23,7 +24,6 @@ class ChessBoard {
     std::vector<Observer*> observers;
 
     bool isUnderAttack(ChessSquare &target, ChessSquare &piece);
-    bool isEnPassantPossible(ChessSquare &initial, ChessSquare &dest);                // check whether the en passant move can be achieved
     bool validMoveExist(ChessSquare piece);
 
 public:
@@ -40,15 +40,16 @@ public:
     bool isValidMove(ChessSquare &initial, ChessSquare &dest, ChessColour turn);        // determine whether a move is valid (movement)
     bool isValidPath(ChessSquare &initial, ChessSquare &dest);                          // determine whether a move is valid (no obstacle)
     bool isCastlingPossible(ChessSquare &initial, ChessSquare &dest, ChessColour turn); // check whether the castling move can be achieved
+    bool isEnPassantPossible(ChessSquare &initial, ChessSquare &dest, ChessMove &lastMove);  // check whether the en passant move can be achieved
     void chessMove(ChessSquare initial, ChessSquare dest);                              // make a standard move
     // void chessMoveCastling(ChessSquare king, ChessSquare rook);                         // make a castling move
     bool isValidBoard();                                                                // return whether the setup board is valid
     void emptyBoard();                                                                  // make the board empty (all Empty pieces)
     bool validMoveExist(ChessColour colour);                                            // return true whenever there are any 
                                                                                         // existing move available in colour side
-                
-
+    
     void pawnPromotion(int row, int column, ChessColour colour);                        // promote pawn
+    bool pawnCapturingMove(ChessSquare &initial, ChessSquare &dest);
     void attach(Observer *o);
     void notifyObservers(ChessPiece &piece);
     friend std::ostream &operator<<(ostream &out, ChessBoard &b);

@@ -22,10 +22,11 @@ ChessGame::ChessGame(ChessBoard board, bool whiteTurn, Player p1, Player p2):
     cout << *textDisplay;
     textDisplay->outputTurn(whiteTurn);
 
+/*
     // Initialize graphics display and attach it to the board
     graphicsDisplay = make_unique<GraphicsDisplay>(new Xwindow(560, 560), BOARD_DIMENSION);
     graphicsDisplay->setBoard(board);
-    this->board.attach(graphicsDisplay.get());
+    this->board.attach(graphicsDisplay.get()); */
 }
 
 ChessGame::~ChessGame() {}
@@ -55,6 +56,22 @@ void ChessGame::makeAMove(std::string initial, std::string dest) {
     ChessColour colour = whiteTurn ? ChessColour::White : ChessColour::Black;
     ChessSquare source = convertPosition(initial);
     ChessSquare destination = convertPosition(dest);
+
+    if (board.getPiece(source.getRow(), source.getColumn()).getType() == ChessType::Pawn &&
+        board.getPiece(destination.getRow(), destination.getColumn()).getType() == ChessType::Empty &&
+        board.pawnCapturingMove(source, destination) && !moveLog.empty()) {
+
+            if (board.isEnPassantPossible(source, destination, moveLog.back())) {
+                movePiece(source, destination);
+                string position = "";
+                position += dest[0];
+                position += initial[1];
+                board.removePiece(position);
+                nextTurn();
+                return;
+            }
+    }
+
 
     // check whether the move is a castling - if so, make a castling move instead of standard one
     if (whiteTurn && initial == "e1" && dest == "g1" && 
