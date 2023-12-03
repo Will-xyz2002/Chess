@@ -15,16 +15,14 @@ ChessGame::ChessGame(ChessBoard board, bool whiteTurn, Player p1, Player p2):
                     board{board}, whiteTurn{whiteTurn}, p1{p1}, p2{p2} {
 
     // initialize text display, set it and output it
-    textDisplay = new TextDisplay();
-    textDisplay->setBoard(board);
-    board.attach(textDisplay);
+    this->textDisplay = make_unique<TextDisplay>();
+    this->textDisplay->setBoard(board);
+    this->board.attach(textDisplay.get());
     cout << *textDisplay;
-    textDisplay->outputTurn(whiteTurn);
+    this->textDisplay->outputTurn(whiteTurn);
 }
 
-ChessGame::~ChessGame() {
-    delete textDisplay;
-}
+ChessGame::~ChessGame() { }
 
 bool ChessGame::isWhiteTurn() { return whiteTurn; }
 bool ChessGame::gameWon() { return isWon; }
@@ -45,13 +43,54 @@ void ChessGame::makeAMove(std::string initial, std::string dest) {
         return;
     }
 
+
     // Checking whether such move is legal
     ChessColour colour = whiteTurn ? ChessColour::White : ChessColour::Black;
     ChessSquare source = convertPosition(initial);
     ChessSquare destination = convertPosition(dest);
 
-    bool validMove;
-    bool validPath;
+    // check whether the move is a castling - if so, make a castling move instead of standard one
+    if (whiteTurn && initial == "e1" && dest == "g1" && 
+        board.getPiece(source.getRow(), source.getColumn()).getType() == ChessType::King) {
+        ChessSquare rook_square = {7, 7};
+        if (board.isCastlingPossible(source, rook_square, colour)) {
+            movePiece(source, destination);
+            movePiece(rook_square, {destination.getRow(), destination.getColumn()-1});
+            nextTurn();
+            return;
+        } 
+    }
+    else if (whiteTurn && initial == "e1" && dest == "c1" && 
+        board.getPiece(source.getRow(), source.getColumn()).getType() == ChessType::King) {
+        ChessSquare rook_square = {7, 0};
+        if (board.isCastlingPossible(source, rook_square, colour)) {
+            movePiece(source, destination);
+            movePiece(rook_square, {destination.getRow(), destination.getColumn()+1});
+            nextTurn();
+            return;
+        } 
+    }
+    else if (!whiteTurn && initial == "e8" && dest == "g8" && 
+        board.getPiece(source.getRow(), source.getColumn()).getType() == ChessType::King) {
+        ChessSquare rook_square = {0, 7};
+        if (board.isCastlingPossible(source, rook_square, colour)) {
+            movePiece(source, destination);
+            movePiece(rook_square, {destination.getRow(), destination.getColumn()-1});
+            nextTurn();
+            return;
+        } 
+    }
+    else if (!whiteTurn && initial == "e8" && dest == "c8" && 
+        board.getPiece(source.getRow(), source.getColumn()).getType() == ChessType::King) {
+        ChessSquare rook_square = {0, 0};
+        if (board.isCastlingPossible(source, rook_square, colour)) {
+            movePiece(source, destination);
+            movePiece(rook_square, {destination.getRow(), destination.getColumn()+1});
+            nextTurn();
+            return;
+        } 
+    }
+
 
     // output invalid move if occur
     if (!board.isValidMove(source, destination, colour) || !board.isValidPath(source, destination)) {
@@ -67,63 +106,9 @@ void ChessGame::makeAMove(std::string initial, std::string dest) {
         return;
     }
 
-    // if approved, add move to moveLog and make a chess move
-    ChessPiece initialPiece = board.getPiece(source.getRow(), source.getColumn());
-    ChessPiece targetPiece = board.getPiece(destination.getRow(), destination.getColumn());
-    ChessMove move {initialPiece, targetPiece};
-    moveLog.emplace_back(move);
-    board.chessMove(initialPiece.getCoords(), targetPiece.getCoords());
-
-    initialPiece = board.getPiece(source.getRow(), source.getColumn());
-    targetPiece = board.getPiece(destination.getRow(), destination.getColumn());
-
-    if (targetPiece.getCoords().getRow() == 0 && 
-        targetPiece.getColour() == ChessColour::White &&
-        targetPiece.getType() == ChessType::Pawn) {
-
-        board.pawnPromotion(targetPiece.getCoords().getRow(), targetPiece.getCoords().getColumn(), ChessColour::White);
-        targetPiece = board.getPiece(destination.getRow(), destination.getColumn());
-    }
-
-    else if (targetPiece.getCoords().getRow() == 7 && 
-        targetPiece.getColour() == ChessColour::Black &&
-        targetPiece.getType() == ChessType::Pawn) {
-        board.pawnPromotion(targetPiece.getCoords().getRow(), targetPiece.getCoords().getColumn(), ChessColour::Black);
-        targetPiece = board.getPiece(destination.getRow(), destination.getColumn());
-    }
-
-    
-    textDisplay->notify(initialPiece); // notify the text display to change
-    textDisplay->notify(targetPiece);
-
-    cout << *textDisplay; // output the board
-    // whiteTurn changes HERE
-    whiteTurn = whiteTurn ? false : true;
-
-
-    // evaluate checkmate/check/stalemate
-    colour = whiteTurn ? ChessColour::White : ChessColour::Black;
-    bool isChecked = board.kingIsUnderAttack(colour);
-
-    if (!board.validMoveExist(colour)) {
-        if (isChecked) {
-            isWon = true;
-            isWhiteWin = !whiteTurn;
-            textDisplay->outputCheckmate(whiteTurn);
-            return;
-        }
-        else {
-            isWon = true;
-            isStalemate = true;
-            textDisplay->outputStalemate();
-            return;
-        }
-    }
-    if (isChecked) {
-        textDisplay->outputCheck(whiteTurn);
-    }
-    // output turn
-    textDisplay->outputTurn(whiteTurn);
+    // if approved, add move to moveLog in movePiece and make a chess move
+    movePiece(source, destination);
+    nextTurn();
 }
 
 
@@ -131,28 +116,7 @@ void ChessGame::makeAMove(std::string initial, std::string dest) {
 void ChessGame::makeAMove() {
     if (whiteTurn) p1.makeAMove();
     else p2.makeAMove();
-    cout << textDisplay;
-    whiteTurn = whiteTurn ? false : true;
-    ChessColour colour = whiteTurn ? ChessColour::White : ChessColour::Black;
-    bool isChecked = board.kingIsUnderAttack(colour);
-    if (!board.validMoveExist(colour)) {
-        if (isChecked) {
-            isWon = true;
-            isWhiteWin = !whiteTurn;
-            textDisplay->outputCheckmate(whiteTurn);
-            return;
-        }
-        else {
-            isWon = true;
-            isStalemate = true;
-            textDisplay->outputStalemate();
-            return;
-        }
-    }
-    if (isChecked) {
-        textDisplay->outputCheck(whiteTurn);
-    }
-    textDisplay->outputTurn(whiteTurn);
+    nextTurn();
 }
 
 
@@ -180,4 +144,69 @@ void ChessGame::resign() {
 bool ChessGame::isStalemated(){
     return isStalemate;
 }
+
+
+// -----------------------------
+// PRIVATE METHOD
+// -----------------------------
+
+void ChessGame::nextTurn() {
+    cout << *textDisplay; // output the board
+
+    // whiteTurn changes HERE
+    whiteTurn = whiteTurn ? false : true;
+
+    // evaluate checkmate/check/stalemate
+    ChessColour colour = whiteTurn ? ChessColour::White : ChessColour::Black;
+    bool isChecked = board.kingIsUnderAttack(colour);
+
+    if (!board.validMoveExist(colour)) {
+        if (isChecked) {
+            isWon = true;
+            isWhiteWin = !whiteTurn;
+            textDisplay->outputCheckmate(whiteTurn);
+            return;
+        }
+        else {
+            isWon = true;
+            isStalemate = true;
+            textDisplay->outputStalemate();
+            return;
+        }
+    }
+    if (isChecked) {
+        textDisplay->outputCheck(whiteTurn);
+    }
+    // output turn
+    textDisplay->outputTurn(whiteTurn);
+}
+
+
+void ChessGame::movePiece(ChessSquare source, ChessSquare destination) {
+    ChessPiece initialPiece = board.getPiece(source.getRow(), source.getColumn());
+    ChessPiece targetPiece = board.getPiece(destination.getRow(), destination.getColumn());
+    ChessMove move {initialPiece, targetPiece};
+    moveLog.emplace_back(move);
+    board.chessMove(source, destination);
+
+    initialPiece = board.getPiece(source.getRow(), source.getColumn());
+    targetPiece = board.getPiece(destination.getRow(), destination.getColumn());
+
+    if (targetPiece.getCoords().getRow() == 0 && 
+        targetPiece.getColour() == ChessColour::White &&
+        targetPiece.getType() == ChessType::Pawn) {
+        board.pawnPromotion(targetPiece.getCoords().getRow(), targetPiece.getCoords().getColumn(), ChessColour::White);
+    }
+
+    else if (targetPiece.getCoords().getRow() == 7 && 
+        targetPiece.getColour() == ChessColour::Black &&
+        targetPiece.getType() == ChessType::Pawn) {
+        board.pawnPromotion(targetPiece.getCoords().getRow(), targetPiece.getCoords().getColumn(), ChessColour::Black);
+    }
+}
+
+
+
+
+
 
