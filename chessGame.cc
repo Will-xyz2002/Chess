@@ -22,11 +22,11 @@ ChessGame::ChessGame(ChessBoard board, bool whiteTurn, Player p1, Player p2):
     cout << *textDisplay;
     textDisplay->outputTurn(whiteTurn);
 
-/*
+
     // Initialize graphics display and attach it to the board
     graphicsDisplay = make_unique<GraphicsDisplay>(new Xwindow(560, 560), BOARD_DIMENSION);
     graphicsDisplay->setBoard(board);
-    this->board.attach(graphicsDisplay.get()); */
+    this->board.attach(graphicsDisplay.get()); 
 }
 
 ChessGame::~ChessGame() {}
