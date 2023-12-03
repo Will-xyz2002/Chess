@@ -31,9 +31,9 @@ ChessBoard::ChessBoard() {
 // COPY CONSTRUCTOR
 ChessBoard::ChessBoard(const ChessBoard &other) {
     board = other.board;
-    observers = other.observers;
     whiteKing = other.whiteKing;
     blackKing = other.blackKing;
+    // observers is not copied - only one board (the board use in chessGame) can have observers
 }
     
 ChessPiece ChessBoard::getPiece(int row, int column) { return board[row][column]; }
@@ -188,13 +188,7 @@ bool ChessBoard::isValidMove(ChessSquare &initial, ChessSquare &dest, ChessColou
         if (source.hasMoved()) k.setMoved(true);
         validMove = k.isValidMove(destination);
     }
-
-    if (validMove) return true; // move is valid
-
-    // exceptions: castling and en passant
-    if (source.getType() == ChessType::King) return isCastlingPossible(initial, dest);
-    if (source.getType() == ChessType::Pawn) return isEnPassantPossible(initial, dest);
-    return false;
+    return validMove;
 }       
 
 
@@ -244,7 +238,65 @@ bool ChessBoard::isValidPath(ChessSquare &initial, ChessSquare &dest) {
         if (!board[r][c].isEmpty()) return false;
     }
     return true;
-}      
+}
+
+bool ChessBoard::isCastlingPossible(ChessSquare &initial, ChessSquare &dest, ChessColour turn) {
+    int initial_row = initial.getRow();
+    int initial_col = initial.getColumn();
+    int dest_row = dest.getRow();
+    int dest_col = dest.getColumn();
+
+    // in order to initiate the castling, the chessSquare initial must occupy a king, dest muct occupy a rook
+    // and they both must be the chessColour that correspond to the current game turn
+    if (board[initial_row][initial_col].getColour() != turn) return false;
+    if (board[dest_row][dest_col].getColour() != turn) return false;
+    if (board[initial_row][initial_col].getType() != ChessType::King) return false;
+    if (board[dest_row][dest_col].getType() != ChessType::Rook) return false;
+    // if either king or rook has moved, castling is not possible
+    if (board[initial_row][initial_col].hasMoved()) return false;
+    if (board[dest_row][dest_col].hasMoved()) return false;
+
+    // we now know that white king is at e1 ([7, 4]) / black king is at e8 ([0, 4])
+    Rook r {turn, {dest_row, dest_col}};
+    if (!isValidPath(dest, initial)) return false; // note that we evaluate path of the rook to the king, so (dest, initial)
+    if (kingIsUnderAttack(turn)) return false;
+
+    if (turn == ChessColour::White) {
+        if (dest.getRow() == 7 && dest.getColumn() == 7) { // white castling to the right
+            ChessBoard temp = *this;
+            temp.chessMove(initial, {initial_row, initial_col+1});
+            if (temp.kingIsUnderAttack(turn)) return false;
+            temp.chessMove({initial_row, initial_col+1}, {initial_row, initial_col+2});
+            if (temp.kingIsUnderAttack(turn)) return false;
+        }
+        else if (dest.getRow() == 7 && dest.getColumn() == 0) { // white castling to the left
+            ChessBoard temp = *this;
+            temp.chessMove(initial, {initial_row, initial_col-1});
+            if (temp.kingIsUnderAttack(turn)) return false;
+            temp.chessMove({initial_row, initial_col-1}, {initial_row, initial_col-2});
+            if (temp.kingIsUnderAttack(turn)) return false;
+        }
+        else return false; // just for safety concern
+    }
+    else if (turn == ChessColour::Black) {
+        if (dest.getRow() == 0 && dest.getColumn() == 7) { // black castling to the right
+            ChessBoard temp = *this;
+            temp.chessMove(initial, {initial_row, initial_col+1});
+            if (temp.kingIsUnderAttack(turn)) return false;
+            temp.chessMove({initial_row, initial_col+1}, {initial_row, initial_col+2});
+            if (temp.kingIsUnderAttack(turn)) return false;
+        }
+        else if (dest.getRow() == 0 && dest.getColumn() == 0) { // black castling to the left
+            ChessBoard temp = *this;
+            temp.chessMove(initial, {initial_row, initial_col-1});
+            if (temp.kingIsUnderAttack(turn)) return false;
+            temp.chessMove({initial_row, initial_col-1}, {initial_row, initial_col-2});
+            if (temp.kingIsUnderAttack(turn)) return false;
+        }
+        else return false;
+    }
+    return true;
+}
 
 
 void ChessBoard::chessMove(ChessSquare initial, ChessSquare dest) {
@@ -266,7 +318,33 @@ void ChessBoard::chessMove(ChessSquare initial, ChessSquare dest) {
 
     // the initial square become empty after move
     board[currentRow][currentCol] = Empty {{currentRow, currentCol}};
-} 
+    notifyObservers(board[currentRow][currentCol]);
+    notifyObservers(board[finalRow][finalCol]);
+}
+
+/*
+void ChessBoard::chessMoveCastling(ChessSquare king, ChessSquare rook) {
+    // by isCastlingPossible function, we know that both king and rook has not moved, have same row, 
+    // and have the same colour.
+    // The castling only occur row-wise, so we only need to know which direction column (aka. the rook column) we need to take
+    int king_r = king.getRow();
+    int king_c = king.getColumn();
+    int rook_r = rook.getRow();
+    int rook_c = rook.getColumn();
+
+    if (rook_c == 7) {
+        ChessSquare new_king_location = {king_r, king_c+2};
+        ChessSquare new_rook_location = {king_r, king_c+1};
+        chessMove(king, new_king_location);
+        chessMove(rook, new_rook_location);
+    }
+    else if (rook_c == 0) {
+        ChessSquare new_king_location = {king_r, king_c-2};
+        ChessSquare new_rook_location = {king_r, king_c-1};
+        chessMove(king, new_king_location);
+        chessMove(rook, new_rook_location);
+    } 
+}*/
 
 bool ChessBoard::isValidBoard() {
     // if there are any pawns at the first or last row after setup, return false
@@ -411,18 +489,22 @@ void ChessBoard::pawnPromotion(int row, int column, ChessColour colour) {
         pieceType = toupper(pieceType);
         if (pieceType == 'Q') {
             board[row][column] = Queen{colour, {row, column}};
+            notifyObservers(board[row][column]);
             break;
         }
         else if (pieceType == 'R') {
             board[row][column] = Rook{colour, {row, column}};
+            notifyObservers(board[row][column]);
             break;
         }
         else if (pieceType == 'B') {
             board[row][column] = Bishop{colour, {row, column}};
+            notifyObservers(board[row][column]);
             break;
         }
         else if (pieceType == 'N') {
             board[row][column] = Knight{colour, {row, column}};
+            notifyObservers(board[row][column]);
             break;
         }
         else {
@@ -431,10 +513,6 @@ void ChessBoard::pawnPromotion(int row, int column, ChessColour colour) {
     } while (true);
 }
 
-
-bool ChessBoard::isCastlingPossible(ChessSquare &initial, ChessSquare &dest) {
-    return false;
-}
 
 bool ChessBoard::isEnPassantPossible(ChessSquare &initial, ChessSquare &dest) {
     return false;
