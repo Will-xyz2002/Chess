@@ -23,15 +23,14 @@ ChessGame::ChessGame(ChessBoard board, bool whiteTurn, Player p1, Player p2):
     textDisplay->outputTurn(whiteTurn);
 
     // Initialize graphics display and attach it to the board
-    graphicsDisplay = new GraphicsDisplay(new Xwindow(560, 560), BOARD_DIMENSION);
+    graphicsDisplay = make_unique<GraphicsDisplay>(new Xwindow(560, 560), BOARD_DIMENSION);
     graphicsDisplay->setBoard(board);
-    board.attach(graphicsDisplay);
+    this->board.attach(graphicsDisplay.get());
 }
 
-ChessGame::~ChessGame() {
-    delete textDisplay;
-    delete graphicsDisplay;
-}
+ChessGame::~ChessGame() {}
+
+
 bool ChessGame::isWhiteTurn() { return whiteTurn; }
 bool ChessGame::gameWon() { return isWon; }
 
