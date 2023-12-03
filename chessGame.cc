@@ -15,6 +15,9 @@ bool checkValidRow(std::string position) {
 ChessGame::ChessGame(ChessBoard board, bool whiteTurn, Player p1, Player p2): 
                     board{board}, whiteTurn{whiteTurn}, p1{p1}, p2{p2} {
 
+    // Initialize the board with pieces
+    this->board.init();
+
     // initialize text display, set it and output it
     this->textDisplay = make_unique<TextDisplay>();
     this->textDisplay->setBoard(board);
@@ -23,13 +26,13 @@ ChessGame::ChessGame(ChessBoard board, bool whiteTurn, Player p1, Player p2):
     textDisplay->outputTurn(whiteTurn);
 
     // Initialize graphics display and attach it to the board
-    graphicsDisplay = make_unique<GraphicsDisplay>(new Xwindow(560, 560), BOARD_DIMENSION);
-    graphicsDisplay->setBoard(board);
+    this->graphicsDisplay = make_unique<GraphicsDisplay>(new Xwindow(560, 560), BOARD_DIMENSION);
+    this->graphicsDisplay->setBoard(board);
     this->board.attach(graphicsDisplay.get());
+    this->graphicsDisplay->drawGrid();
 }
 
 ChessGame::~ChessGame() {}
-
 
 bool ChessGame::isWhiteTurn() { return whiteTurn; }
 bool ChessGame::gameWon() { return isWon; }
@@ -210,9 +213,3 @@ void ChessGame::movePiece(ChessSquare source, ChessSquare destination) {
         board.pawnPromotion(targetPiece.getCoords().getRow(), targetPiece.getCoords().getColumn(), ChessColour::Black);
     }
 }
-
-
-
-
-
-

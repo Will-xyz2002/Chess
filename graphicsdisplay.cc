@@ -52,13 +52,17 @@ void GraphicsDisplay::drawCell(int r, int c, char piecedisplay, ChessColour ches
     xw->fillRectangle(x, y, cellSize, cellSize, cellColour);
     
     // If the cell is not empty, draw the piece character
-    if (piecedisplay != '\0') {
+    if (piecedisplay != '\0' && piecedisplay != '_') {
         int highlightSize = cellSize / 2; // Adjust size for highlight background
-        int highlightX = x + (cellSize - highlightSize) / 2;
-        int highlightY = y + (cellSize - highlightSize) / 2;
-        xw->fillRectangle(highlightX, highlightY, highlightSize, highlightSize, highlightColour);
+        int highlightSizeX = highlightSize / 1.7;
+        int highlightPosX = highlightSizeX;
+        int highlightSizeY = highlightSize / 1.2;
+        int highlightPosY = highlightSizeY / 1.5;
+        int highlightX = x + (cellSize - highlightPosX) / 2;
+        int highlightY = y + (cellSize - highlightPosY) / 2;
+        xw->fillRectangle(highlightX, highlightY, highlightSizeX, highlightSizeY, highlightColour);
 
-        int textX = x + (cellSize / 2) - 3; // Adjust X position for centering
+        int textX = x + (cellSize / 2) - 5; // Adjust X position for centering
         int textY = y + (cellSize / 2) + 10; // Adjust Y position for centering
         xw->drawString(textX, textY, &piecedisplay, 1, textColour);
     }
@@ -71,4 +75,3 @@ void GraphicsDisplay::drawGrid() {
     }
   }
 }
-
