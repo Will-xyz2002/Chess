@@ -1,5 +1,6 @@
 #include "chessGame.h"
 #include "chessPiece.h"
+#include "window.h"
 
 // -- INPUT CHECK ----
 bool checkValidColumn(std::string position) {
@@ -19,11 +20,18 @@ ChessGame::ChessGame(ChessBoard board, bool whiteTurn, Player p1, Player p2):
     this->textDisplay->setBoard(board);
     this->board.attach(textDisplay.get());
     cout << *textDisplay;
-    this->textDisplay->outputTurn(whiteTurn);
+    textDisplay->outputTurn(whiteTurn);
+
+    // Initialize graphics display and attach it to the board
+    graphicsDisplay = new GraphicsDisplay(new Xwindow(560, 560), BOARD_DIMENSION);
+    graphicsDisplay->setBoard(board);
+    board.attach(graphicsDisplay);
 }
 
-ChessGame::~ChessGame() { }
-
+ChessGame::~ChessGame() {
+    delete textDisplay;
+    delete graphicsDisplay;
+}
 bool ChessGame::isWhiteTurn() { return whiteTurn; }
 bool ChessGame::gameWon() { return isWon; }
 
@@ -118,7 +126,6 @@ void ChessGame::makeAMove() {
     else p2.makeAMove();
     nextTurn();
 }
-
 
 
 void ChessGame::undo() {

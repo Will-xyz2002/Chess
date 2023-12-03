@@ -5,7 +5,7 @@
 
 using namespace std;
 
-enum class ChessColour {White, Black, None};
+enum class ChessColour {White, Black, Nocolour};
 enum class ChessType {Pawn, King, Bishop, Knight, Queen, Rook, Empty};
 
 class ChessPiece {

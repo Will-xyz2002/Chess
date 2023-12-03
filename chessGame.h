@@ -3,6 +3,7 @@
 #include "chessBoard.h"
 #include "chessMove.h"
 #include "textDisplay.h"
+#include "graphicsdisplay.h"
 #include "player.h"
 #include <vector>
 #include <string>
@@ -17,6 +18,7 @@ class ChessGame {
     Player p1;
     Player p2;
     std::vector<ChessMove> moveLog;
+    GraphicsDisplay *graphicsDisplay;
 
     void nextTurn();
     void movePiece(ChessSquare source, ChessSquare destination);
