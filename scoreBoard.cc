@@ -20,3 +20,7 @@ void ScoreBoard::printScore(){
     cout << "Black: " << black_score << endl;
 }
 
+void ScoreBoard::reset(){
+    white_score = 0.0f;
+    black_score = 0.0f;
+}
