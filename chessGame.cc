@@ -24,7 +24,7 @@ ChessGame::ChessGame(ChessBoard board, bool whiteTurn, Player p1, Player p2):
 
 
     // Initialize graphics display and attach it to the board
-    this->graphicsDisplay = std::move(make_unique<GraphicsDisplay>(new Xwindow(560, 560), BOARD_DIMENSION));
+    this->graphicsDisplay = std::move(make_unique<GraphicsDisplay>(new Xwindow(), BOARD_DIMENSION));
     this->graphicsDisplay->setBoard(board);
     this->board.attach(graphicsDisplay.get()); 
     this->graphicsDisplay->drawGrid(); 

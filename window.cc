@@ -8,7 +8,7 @@
 
 using namespace std;
 
-Xwindow::Xwindow(int width, int height) {
+Xwindow::Xwindow() {
 
   d = XOpenDisplay(NULL);
   if (d == NULL) {
@@ -17,7 +17,7 @@ Xwindow::Xwindow(int width, int height) {
   }
   s = DefaultScreen(d);
   w = XCreateSimpleWindow(d, RootWindow(d, s), 10, 10, width, height, 1,
-                          BlackPixel(d, s), WhitePixel(d, s));
+                          BlackPixel(d, s), BlackPixel(d, s));
   XSelectInput(d, w, ExposureMask | KeyPressMask);
   XMapRaised(d, w);
 
@@ -78,3 +78,5 @@ void Xwindow::drawString(int x, int y, const char *msg, int length, int colour) 
   XDrawString(d, w, gc, x, y, msg, length);
 }
 
+int Xwindow::getWidth() { return width; }
+int Xwindow::getHeight() { return height; }
