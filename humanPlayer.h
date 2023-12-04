@@ -8,7 +8,5 @@ public:
     HumanPlayer(const HumanPlayer &other) = delete;
     HumanPlayer &operator=(const HumanPlayer &other) = delete;
     ~HumanPlayer() = default;
-    void makeAMove() override;
-    void resign() override;
 };
 #endif

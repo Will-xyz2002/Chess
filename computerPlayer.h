@@ -9,7 +9,6 @@ public:
     ComputerPlayer(const ComputerPlayer &other) = delete;
     ComputerPlayer &operator=(const ComputerPlayer &other) = delete;
     ~ComputerPlayer() = default;
-    void makeAMove() override;
 };
 
 #endif
