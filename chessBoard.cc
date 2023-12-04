@@ -121,6 +121,10 @@ void ChessBoard::addPiece(char pieceType, std::string position) {
     else if (pieceType == 'P') board[r][c] = Pawn{ChessColour::White, location};
     else if (pieceType == 'k') board[r][c] = King{ChessColour::Black, location};
     else if (pieceType == 'K') board[r][c] = King{ChessColour::White, location};
+
+    if (pieceType == 'p' && r == 1) board[r][c].setMoved(false);
+    else if (pieceType == 'P' && r == 6) board[r][c].setMoved(false);
+    else board[r][c].setMoved(true);
     notifyObservers(board[r][c]);
 }
 
