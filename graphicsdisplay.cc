@@ -7,7 +7,7 @@ using namespace std;
 GraphicsDisplay::GraphicsDisplay(Xwindow *xw, int gridSize)
     : xw(xw), gridSize(gridSize), display(gridSize, vector<char>(gridSize, '\0')),
     displayColour(gridSize, vector<ChessColour>(gridSize, ChessColour::Nocolour)) {
-        drawGrid();
+        // drawGrid();
     }
 
 GraphicsDisplay::~GraphicsDisplay() {
@@ -55,7 +55,7 @@ void GraphicsDisplay::drawCell(int r, int c, char piecedisplay, ChessColour ches
     xw->fillRectangle(x, y, cellSize, cellSize, cellColour);
     
     // If the cell is not empty, draw the piece character
-    if (piecedisplay != '\0' && piecedisplay != '_') {
+    if (piecedisplay != ' ' && piecedisplay != '_') {
         int highlightSize = cellSize / 2; // Adjust size for highlight background
         int highlightSizeX = highlightSize / 1.7;
         int highlightPosX = highlightSizeX;
