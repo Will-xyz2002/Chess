@@ -16,6 +16,7 @@ class GraphicsDisplay: public Observer {
 
  public:
   GraphicsDisplay(Xwindow *xw, int gridSize);
+  ~GraphicsDisplay();
   void setBoard(ChessBoard &board);
   void notify(ChessPiece &piece) override;
 

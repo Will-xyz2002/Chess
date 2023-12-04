@@ -10,6 +10,9 @@ GraphicsDisplay::GraphicsDisplay(Xwindow *xw, int gridSize)
         drawGrid();
     }
 
+GraphicsDisplay::~GraphicsDisplay() {
+    delete xw;
+}
 void GraphicsDisplay::setBoard(ChessBoard &board) {
     for (int r = 0; r < gridSize; ++r) {
         for (int c = 0; c < gridSize; ++c) {
