@@ -10,9 +10,12 @@ class Xwindow {
   int s;
   GC gc;
   unsigned long colours[10];
+  // height > width;
+  int width = 560;
+  int height = 700;
 
  public:
-  Xwindow(int width=560, int height=560);  // Constructor; displays the window.
+  Xwindow();  // Constructor; displays the window.
   ~Xwindow();                              // Destructor; destroys the window.
 
   enum {White=0, Black, Red, Green, Blue}; // Available colours.
@@ -23,6 +26,9 @@ class Xwindow {
   // Draws a string
   void drawString(int x, int y, const char *msg, int length, int colour);
 
+  // accessor
+  int getWidth();
+  int getHeight();
 };
 
 #endif

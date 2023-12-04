@@ -6,13 +6,13 @@ using namespace std;
 
 GraphicsDisplay::GraphicsDisplay(Xwindow *xw, int gridSize)
     : xw(xw), gridSize(gridSize), display(gridSize, vector<char>(gridSize, '\0')),
-    displayColour(gridSize, vector<ChessColour>(gridSize, ChessColour::Nocolour)) {
-        // drawGrid();
-    }
+    displayColour(gridSize, vector<ChessColour>(gridSize, ChessColour::Nocolour)), labelOffset(24) {
+}
 
 GraphicsDisplay::~GraphicsDisplay() {
     delete xw;
 }
+
 void GraphicsDisplay::setBoard(ChessBoard &board) {
     for (int r = 0; r < gridSize; ++r) {
         for (int c = 0; c < gridSize; ++c) {
@@ -31,11 +31,38 @@ void GraphicsDisplay::notify(ChessPiece &piece) {
     drawCell(row, col, piecedisplay, chessColour);
 }
 
+void GraphicsDisplay::drawTitle() {
+    // ASCII retrieved from https://patorjk.com/software/taag/#p=display&f=3-D&t=CHESS
+    const char* line = "===================================================";
+    const char* slice1 = "   ******  **      ** ********  ********  ********";
+    const char* slice2 = "  **////**/**     /**/**/////  **//////  **////// ";
+    const char* slice3 = " **    // /**     /**/**      /**       /**       ";
+    const char* slice4 = "/**       /**********/******* /*********/*********";
+    const char* slice5 = "/**       /**//////**/**////  ////////**////////**";
+    const char* slice6 = "//**    **/**     /**/**             /**       /**";
+    const char* slice7 = " //****** /**     /**/******** ********  ******** ";
+    const char* slice8 = "  //////  //      // //////// ////////  ////////  ";
+    int length = 50;
+
+    xw->drawString(28, 20, line, length, Xwindow::White);
+    xw->drawString(28, 40, slice1, length, Xwindow::White);
+    xw->drawString(28, 50, slice2, length, Xwindow::White);
+    xw->drawString(28, 60, slice3, length, Xwindow::White);
+    xw->drawString(28, 70, slice4, length, Xwindow::White);
+    xw->drawString(28, 80, slice5, length, Xwindow::White);
+    xw->drawString(28, 90, slice6, length, Xwindow::White);
+    xw->drawString(28, 100, slice7, length, Xwindow::White);
+    xw->drawString(28, 110, slice8, length, Xwindow::White);
+    xw->drawString(28, 130, line, length, Xwindow::White);
+
+}
+
 void GraphicsDisplay::drawCell(int r, int c, char piecedisplay, ChessColour chessColour) {
-    int cellSize = 560 / gridSize;
-    int x = c * cellSize;
+    int cellSize = (xw->getWidth() - labelOffset) / gridSize;
+    int down = xw->getHeight() - xw->getWidth();
+    int x = labelOffset + c * cellSize;
     int y = r * cellSize;
-    
+
     // Determine the colour of the cell
     // and the colour of the text for the piece
     int cellColour = ((r + c) % 2 == 0) ? Xwindow::White : Xwindow::Black;
@@ -52,7 +79,7 @@ void GraphicsDisplay::drawCell(int r, int c, char piecedisplay, ChessColour ches
     }
 
     // Draw the cell with the colour
-    xw->fillRectangle(x, y, cellSize, cellSize, cellColour);
+    xw->fillRectangle(x, y + down, cellSize, cellSize, cellColour);
     
     // If the cell is not empty, draw the piece character
     if (piecedisplay != ' ' && piecedisplay != '_') {
@@ -63,18 +90,41 @@ void GraphicsDisplay::drawCell(int r, int c, char piecedisplay, ChessColour ches
         int highlightPosY = highlightSizeY / 1.5;
         int highlightX = x + (cellSize - highlightPosX) / 2;
         int highlightY = y + (cellSize - highlightPosY) / 2;
-        xw->fillRectangle(highlightX, highlightY, highlightSizeX, highlightSizeY, highlightColour);
+        xw->fillRectangle(highlightX, highlightY + down, highlightSizeX, highlightSizeY, highlightColour);
 
         int textX = x + (cellSize / 2) - 5; // Adjust X position for centering
         int textY = y + (cellSize / 2) + 10; // Adjust Y position for centering
-        xw->drawString(textX, textY, &piecedisplay, 1, textColour);
+        xw->drawString(textX, textY + down, &piecedisplay, 1, textColour);
     }
 }
 
 void GraphicsDisplay::drawGrid() {
+  int cellSize = (560 - labelOffset) / gridSize;
+  int down = xw->getHeight() - xw->getWidth();
+  int baseX = labelOffset - 17; // Starting X position for the grid
+  int baseY = labelOffset - 14; // Starting Y position for the grid
+  
+  drawTitle();
+
   for (int r = 0; r < BOARD_DIMENSION; ++r) {
     for (int c = 0; c < BOARD_DIMENSION; ++c) {
       drawCell(r, c, display[r][c], displayColour[r][c]);
     }
+  }
+
+  // Draw row labels (1, 2, 3, ... 8)
+  for (int r = 0; r < BOARD_DIMENSION; ++r) {
+    string label = to_string(BOARD_DIMENSION - r); // Rows are labeled from 8 to 1
+    xw->drawString(baseX, down + baseY + r * cellSize + cellSize / 2, label.c_str(), label.length(), Xwindow::White);
+  }
+
+  // Draw column labels (a, b, c, ... h)
+  // Adjust the Y position to be below the grid
+  baseX += 11;
+  int bottom = labelOffset + BOARD_DIMENSION * cellSize;
+  bottom -= 6;
+  for (int c = 0; c < BOARD_DIMENSION; ++c) {
+    char label = 'a' + c;
+    xw->drawString(baseX + c * cellSize + cellSize / 2 , down + bottom, &label, 1, Xwindow::White);
   }
 }
