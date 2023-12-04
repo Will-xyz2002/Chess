@@ -4,13 +4,9 @@
 
 using namespace std;
 
-GraphicsDisplay::GraphicsDisplay(Xwindow *xw, int gridSize)
-    : xw(xw), gridSize(gridSize), display(gridSize, vector<char>(gridSize, '\0')),
+GraphicsDisplay::GraphicsDisplay(int gridSize)
+    : xw(make_unique<Xwindow>()), gridSize(gridSize), display(gridSize, vector<char>(gridSize, '\0')),
     displayColour(gridSize, vector<ChessColour>(gridSize, ChessColour::Nocolour)), labelOffset(24) {
-}
-
-GraphicsDisplay::~GraphicsDisplay() {
-    delete xw;
 }
 
 void GraphicsDisplay::setBoard(ChessBoard &board) {

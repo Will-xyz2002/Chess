@@ -9,15 +9,14 @@
 using namespace std;
 
 class GraphicsDisplay: public Observer {
-  Xwindow *xw;
+  unique_ptr<Xwindow> xw;
   int gridSize;
   vector<vector<char>> display;
   vector<vector<ChessColour>> displayColour;
   int labelOffset;
 
  public:
-  GraphicsDisplay(Xwindow *xw, int gridSize);
-  ~GraphicsDisplay();
+  GraphicsDisplay(int gridSize);
   void setBoard(ChessBoard &board);
   void notify(ChessPiece &piece) override;
 
