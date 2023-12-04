@@ -140,11 +140,12 @@ void ChessGame::makeAMove(std::string initial, std::string dest) {
 
 
 // for computer player only
-void ChessGame::makeAMove() {
+/*void ChessGame::makeAMove() {
     if (whiteTurn) whitePlayer->makeAMove();
     else blackPlayer->makeAMove();
     nextTurn();
 }
+*/
 
 
 void ChessGame::undo() {
