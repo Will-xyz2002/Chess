@@ -25,7 +25,6 @@ class ChessGame {
 
 public:
     ChessGame(ChessBoard board, bool whiteTurn, Player p1, Player p2);
-    ~ChessGame();
     bool isWhiteTurn();
     bool isStalemated();
     bool gameWon();

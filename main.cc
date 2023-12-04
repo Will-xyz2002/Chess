@@ -28,19 +28,19 @@ Command convertCommand(string command) {
 
 bool assignPlayer(string p, unique_ptr<Player> &player, ChessColour colour) {
     if (p == "human" || p == "h") {
-        player = make_unique<HumanPlayer>(colour);
+        player = std::move(make_unique<HumanPlayer>(colour));
         return true;
     }
     else if (p == "computer[1]" || p == "c1") {
-        player = make_unique<ComputerPlayer>(colour, 1);
+        player = std::move(make_unique<ComputerPlayer>(colour, 1));
         return true;
     }
     else if (p == "computer[2]" || p == "c2") {
-        player = make_unique<ComputerPlayer>(colour, 2);
+        player = std::move(make_unique<ComputerPlayer>(colour, 2));
         return true;
     }
     else if (p == "computer[3]" || p == "c3") {
-        player = make_unique<ComputerPlayer>(colour, 3);
+        player = std::move(make_unique<ComputerPlayer>(colour, 3));
         return true;
     }
     return false;
@@ -50,7 +50,7 @@ bool assignPlayer(string p, unique_ptr<Player> &player, ChessColour colour) {
 int main(void) {
     string command;
     unique_ptr <ChessGame> game = nullptr;
-    unique_ptr <ScoreBoard> score = make_unique<ScoreBoard>();
+    unique_ptr <ScoreBoard> score = std::move(make_unique<ScoreBoard>());
     ChessBoard board;
     bool isWhiteTurn = true;
     bool gameIsOn = false;
@@ -76,7 +76,7 @@ int main(void) {
                         board.init();
                     }
                     if (game != nullptr) game.reset();
-                    game = make_unique<ChessGame>(board, isWhiteTurn, *p1, *p2);
+                    game = std::move(make_unique<ChessGame>(board, isWhiteTurn, *p1, *p2));
                     board.init();
                     gameIsOn = true;
                 }

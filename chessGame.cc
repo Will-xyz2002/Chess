@@ -16,7 +16,7 @@ ChessGame::ChessGame(ChessBoard board, bool whiteTurn, Player p1, Player p2):
                     board{board}, whiteTurn{whiteTurn}, p1{p1}, p2{p2} {
 
     // initialize text display, set it and output it
-    this->textDisplay = make_unique<TextDisplay>();
+    this->textDisplay = std::move(make_unique<TextDisplay>());
     this->textDisplay->setBoard(board);
     this->board.attach(textDisplay.get());
     cout << *textDisplay;
@@ -24,13 +24,11 @@ ChessGame::ChessGame(ChessBoard board, bool whiteTurn, Player p1, Player p2):
 
 
     // Initialize graphics display and attach it to the board
-    this->graphicsDisplay = make_unique<GraphicsDisplay>(new Xwindow(560, 560), BOARD_DIMENSION);
+    this->graphicsDisplay = std::move(make_unique<GraphicsDisplay>(BOARD_DIMENSION));
     this->graphicsDisplay->setBoard(board);
     this->board.attach(graphicsDisplay.get()); 
     this->graphicsDisplay->drawGrid(); 
 }
-
-ChessGame::~ChessGame() {}
 
 bool ChessGame::isWhiteTurn() { return whiteTurn; }
 bool ChessGame::gameWon() { return isWon; }
