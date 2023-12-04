@@ -89,10 +89,6 @@ int main(void) {
                 }
                 string initial;
                 string dest;
-                if (game->isWhiteTurn()){
-                    // now the white's turn
-                    if ()
-                }
                 if (cin >> initial && cin >> dest) {
                     game->makeAMove(initial, dest);
                 }
