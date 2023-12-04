@@ -7,8 +7,6 @@ Pawn::Pawn(ChessColour colour, ChessSquare coords)
     else if (colour == ChessColour::Black) setDisplay('p');
 }
 
-bool Pawn::isEnPassanted() { return enPassanted; }
-
 bool Pawn::isValidMove(ChessPiece &dest) {
     int srcRow = this->getCoords().getRow();
     int srcColumn = this->getCoords().getColumn();
