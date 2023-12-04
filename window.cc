@@ -44,7 +44,7 @@ Xwindow::Xwindow() {
 
   // Set up fonts.
   const char *fontname = "10x20";
-  XFontStruct *font = XLoadQueryFont(d, fontname);
+  font = XLoadQueryFont(d, fontname);
   if (!font) {
     cerr << "Cannot load font " << fontname << endl;
     exit(1);
@@ -65,6 +65,7 @@ Xwindow::Xwindow() {
 
 Xwindow::~Xwindow() {
   XFreeGC(d, gc);
+  XFreeFont(d, font);
   XCloseDisplay(d);
 }
 

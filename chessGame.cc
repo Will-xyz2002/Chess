@@ -12,8 +12,8 @@ bool checkValidRow(std::string position) {
 }
 // ----------------
 
-ChessGame::ChessGame(ChessBoard board, bool whiteTurn, Player p1, Player p2): 
-                    board{board}, whiteTurn{whiteTurn}, p1{p1}, p2{p2} {
+ChessGame::ChessGame(ChessBoard board, bool whiteTurn, std::shared_ptr<Player> whitePlayer, std::shared_ptr<Player> blackPlayer): 
+                    board{board}, whiteTurn{whiteTurn}, whitePlayer{std::move(whitePlayer)}, blackPlayer{std::move(blackPlayer)} {
 
     // initialize text display, set it and output it
     this->textDisplay = std::move(make_unique<TextDisplay>());
@@ -136,8 +136,8 @@ void ChessGame::makeAMove(std::string initial, std::string dest) {
 
 // for computer player only
 void ChessGame::makeAMove() {
-    if (whiteTurn) p1.makeAMove();
-    else p2.makeAMove();
+    if (whiteTurn) whitePlayer->makeAMove();
+    else blackPlayer->makeAMove();
     nextTurn();
 }
 

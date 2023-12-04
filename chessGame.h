@@ -16,15 +16,15 @@ class ChessGame {
     bool isWhiteWin = false;
     bool isStalemate = false;
     bool isWon = false;
-    Player p1;
-    Player p2;
+    std::shared_ptr<Player> whitePlayer;
+    std::shared_ptr<Player> blackPlayer;
     std::vector<ChessMove> moveLog;
 
     void nextTurn();
     void movePiece(ChessSquare source, ChessSquare destination);
 
 public:
-    ChessGame(ChessBoard board, bool whiteTurn, Player p1, Player p2);
+    ChessGame(ChessBoard board, bool whiteTurn, std::shared_ptr<Player> whitePlayer, std::shared_ptr<Player> blackPlayer);
     bool isWhiteTurn();
     bool isStalemated();
     bool gameWon();

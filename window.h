@@ -6,6 +6,7 @@
 
 class Xwindow {
   Display *d;
+  XFontStruct *font;
   Window w;
   int s;
   GC gc;
