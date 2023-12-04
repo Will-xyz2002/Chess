@@ -55,11 +55,13 @@ void ChessGame::makeAMove(std::string initial, std::string dest) {
     ChessSquare source = convertPosition(initial);
     ChessSquare destination = convertPosition(dest);
 
+    // first, we check whether a player is attempting to make a special move (castling or en passant)
+    // check whether the move is an en passant move
     if (board.getPiece(source.getRow(), source.getColumn()).getType() == ChessType::Pawn &&
         board.getPiece(destination.getRow(), destination.getColumn()).getType() == ChessType::Empty &&
         board.pawnCapturingMove(source, destination) && !moveLog.empty()) {
 
-            if (board.isEnPassantPossible(source, destination, moveLog.back())) {
+            if (board.isEnPassantPossible(source, destination, colour, moveLog.back())) {
                 movePiece(source, destination);
                 string position = "";
                 position += dest[0];
@@ -70,10 +72,10 @@ void ChessGame::makeAMove(std::string initial, std::string dest) {
             }
     }
 
-
     // check whether the move is a castling - if so, make a castling move instead of standard one
     if (whiteTurn && initial == "e1" && dest == "g1" && 
         board.getPiece(source.getRow(), source.getColumn()).getType() == ChessType::King) {
+
         ChessSquare rook_square = {7, 7};
         if (board.isCastlingPossible(source, rook_square, colour)) {
             movePiece(source, destination);
@@ -84,6 +86,7 @@ void ChessGame::makeAMove(std::string initial, std::string dest) {
     }
     else if (whiteTurn && initial == "e1" && dest == "c1" && 
         board.getPiece(source.getRow(), source.getColumn()).getType() == ChessType::King) {
+
         ChessSquare rook_square = {7, 0};
         if (board.isCastlingPossible(source, rook_square, colour)) {
             movePiece(source, destination);
@@ -94,6 +97,7 @@ void ChessGame::makeAMove(std::string initial, std::string dest) {
     }
     else if (!whiteTurn && initial == "e8" && dest == "g8" && 
         board.getPiece(source.getRow(), source.getColumn()).getType() == ChessType::King) {
+
         ChessSquare rook_square = {0, 7};
         if (board.isCastlingPossible(source, rook_square, colour)) {
             movePiece(source, destination);
@@ -104,6 +108,7 @@ void ChessGame::makeAMove(std::string initial, std::string dest) {
     }
     else if (!whiteTurn && initial == "e8" && dest == "c8" && 
         board.getPiece(source.getRow(), source.getColumn()).getType() == ChessType::King) {
+
         ChessSquare rook_square = {0, 0};
         if (board.isCastlingPossible(source, rook_square, colour)) {
             movePiece(source, destination);
@@ -113,7 +118,7 @@ void ChessGame::makeAMove(std::string initial, std::string dest) {
         } 
     }
 
-
+    // otherwise, make a standard move
     // output invalid move if occur
     if (!board.isValidMove(source, destination, colour) || !board.isValidPath(source, destination)) {
         textDisplay->outputInvalidMove();
@@ -213,6 +218,7 @@ void ChessGame::movePiece(ChessSquare source, ChessSquare destination) {
     initialPiece = board.getPiece(source.getRow(), source.getColumn());
     targetPiece = board.getPiece(destination.getRow(), destination.getColumn());
 
+    // special case: pawn promotion
     if (targetPiece.getCoords().getRow() == 0 && 
         targetPiece.getColour() == ChessColour::White &&
         targetPiece.getType() == ChessType::Pawn) {

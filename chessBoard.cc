@@ -321,12 +321,11 @@ bool ChessBoard::isCastlingPossible(ChessSquare &initial, ChessSquare &dest, Che
 }
 
 
-bool ChessBoard::isEnPassantPossible(ChessSquare &initial, ChessSquare &dest, ChessMove &lastMove) {
+bool ChessBoard::isEnPassantPossible(ChessSquare &initial, ChessSquare &dest, ChessColour turn, ChessMove &lastMove) {
     // to do en passant, the pawn must attempt to do a capturing move towards an empty space
     // assuming that we already deal with that in chessGame
-
-    ChessColour player = board[initial.getRow()][initial.getColumn()].getColour();
-    ChessColour opponent = (player == ChessColour::White) ? ChessColour::Black : ChessColour::White;
+    if (board[initial.getRow()][initial.getColumn()].getColour() != turn) return false;
+    ChessColour opponent = (turn == ChessColour::White) ? ChessColour::Black : ChessColour::White;
 
     // if the piece we are attempting to capture is not an opponent pawn, it is invalid
     if (board[initial.getRow()][dest.getColumn()].getType() != ChessType::Pawn) return false;
