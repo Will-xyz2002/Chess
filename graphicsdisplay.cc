@@ -33,28 +33,35 @@ void GraphicsDisplay::notify(ChessPiece &piece) {
 
 void GraphicsDisplay::drawTitle() {
     // ASCII retrieved from https://patorjk.com/software/taag/#p=display&f=3-D&t=CHESS
-    const char* line = "===================================================";
-    const char* slice1 = "   ******  **      ** ********  ********  ********";
-    const char* slice2 = "  **////**/**     /**/**/////  **//////  **////// ";
-    const char* slice3 = " **    // /**     /**/**      /**       /**       ";
-    const char* slice4 = "/**       /**********/******* /*********/*********";
-    const char* slice5 = "/**       /**//////**/**////  ////////**////////**";
-    const char* slice6 = "//**    **/**     /**/**             /**       /**";
-    const char* slice7 = " //****** /**     /**/******** ********  ******** ";
-    const char* slice8 = "  //////  //      // //////// ////////  ////////  ";
-    int length = 50;
-
-    xw->drawString(28, 20, line, length, Xwindow::White);
-    xw->drawString(28, 40, slice1, length, Xwindow::White);
-    xw->drawString(28, 50, slice2, length, Xwindow::White);
-    xw->drawString(28, 60, slice3, length, Xwindow::White);
-    xw->drawString(28, 70, slice4, length, Xwindow::White);
-    xw->drawString(28, 80, slice5, length, Xwindow::White);
-    xw->drawString(28, 90, slice6, length, Xwindow::White);
-    xw->drawString(28, 100, slice7, length, Xwindow::White);
-    xw->drawString(28, 110, slice8, length, Xwindow::White);
-    xw->drawString(28, 130, line, length, Xwindow::White);
-
+    if(xw->getHeight() - xw->getWidth() >= 200) {
+        const char* boundary = "===================================================";
+        const char* slice1 = "   ******  **      ** ********  ********  ********";
+        const char* slice2 = "  **////**/**     /**/**/////  **//////  **////// ";
+        const char* slice3 = " **    // /**     /**/**      /**       /**       ";
+        const char* slice4 = "/**       /**********/******* /*********/*********";
+        const char* slice5 = "/**       /**//////**/**////  ////////**////////**";
+        const char* slice6 = "//**    **/**     /**/**             /**       /**";
+        const char* slice7 = " //****** /**     /**/******** ********  ******** ";
+        const char* slice8 = "  //////  //      // //////// ////////  ////////  ";
+        const char* command1 = "Commands: (g)ame ((h)uman or (c)omputer[1-4])";
+        const char* command2 = "          (m)ove [a-h][1-8] [a-h][1-8] (Q,R,B,N)";
+        const char* command3 = "          (r)esign (s)etup (+) (-) (=) (d)one";
+        int length = 50;
+        
+        xw->drawString(28, 20, boundary, length, Xwindow::White);
+        xw->drawString(28, 40, slice1, length, Xwindow::White);
+        xw->drawString(28, 50, slice2, length, Xwindow::White);
+        xw->drawString(28, 60, slice3, length, Xwindow::White);
+        xw->drawString(28, 70, slice4, length, Xwindow::White);
+        xw->drawString(28, 80, slice5, length, Xwindow::White);
+        xw->drawString(28, 90, slice6, length, Xwindow::White);
+        xw->drawString(28, 100, slice7, length, Xwindow::White);
+        xw->drawString(28, 110, slice8, length, Xwindow::White);
+        xw->drawString(28, 130, boundary, length, Xwindow::White);
+        xw->drawString(28, 150, command1, 45, Xwindow::White);
+        xw->drawString(28, 170, command2, 48, Xwindow::White);
+        xw->drawString(28, 190, command3, 45, Xwindow::White);
+    }
 }
 
 void GraphicsDisplay::drawCell(int r, int c, char piecedisplay, ChessColour chessColour) {
