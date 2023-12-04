@@ -11,6 +11,7 @@ public:
     void black_won(); // add one point to black
     void add_both(); // add half points to both
     void printScore(); // print it out
+    void reset();
 };
 
 #endif

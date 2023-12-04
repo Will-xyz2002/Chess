@@ -11,7 +11,7 @@
 using namespace std;
 
 
-enum class Command {GAME, MOVE, RESIGN, SETUP, ADD_PIECE, REMOVE_PIECE, CHANGE_PLAYER, DONE, NONE};
+enum class Command {GAME, MOVE, RESIGN, SETUP, ADD_PIECE, REMOVE_PIECE, CHANGE_PLAYER, DONE, NONE, RESET, SCORE};
 
 Command convertCommand(string command) {
     if (command == "game" || command == "g") return Command::GAME;
@@ -22,6 +22,8 @@ Command convertCommand(string command) {
     if (command == "-") return Command::REMOVE_PIECE;
     if (command == "done" || command == "d") return Command::DONE;
     if (command == "=") return Command::CHANGE_PLAYER;
+    if (command == "reset") return Command::RESET;
+    if (command == "score") return Command::SCORE;
     return Command::NONE;
 }
 
@@ -169,6 +171,15 @@ int main(void) {
                     }
                     if (setUpComplete) break;
                 }
+            }
+            case Command::RESET:{ // reset the scoreboard
+                cout << "Resetting the Score Board..." << endl;
+                score->reset();
+                score->printScore();
+            }
+            case Command::SCORE: { // let the player know the current score
+                cout << "Printing out the current score..." << endl;
+                score->printScore();
             }
             default: {
                 break;

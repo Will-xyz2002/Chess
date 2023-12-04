@@ -46,6 +46,7 @@ void GraphicsDisplay::drawTitle() {
         const char* command1 = "Commands: (g)ame ((h)uman or (c)omputer[1-4])";
         const char* command2 = "          (m)ove [a-h][1-8] [a-h][1-8] (Q,R,B,N)";
         const char* command3 = "          (r)esign (s)etup (+) (-) (=) (d)one";
+        const char* command4 = "          reset                         score";
         int length = 50;
         
         xw->drawString(28, 20, boundary, length, Xwindow::White);
@@ -61,6 +62,7 @@ void GraphicsDisplay::drawTitle() {
         xw->drawString(28, 150, command1, 45, Xwindow::White);
         xw->drawString(28, 170, command2, 48, Xwindow::White);
         xw->drawString(28, 190, command3, 45, Xwindow::White);
+        xw->drawString(28, 210, command4, 45, Xwindow::White);
     }
 }
 
