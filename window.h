@@ -11,9 +11,9 @@ class Xwindow {
   int s;
   GC gc;
   unsigned long colours[10];
-  // height > width;
+  // height - width = 220 to have title
   int width = 560;
-  int height = 760;
+  int height = 780;
 
  public:
   Xwindow();  // Constructor; displays the window.
