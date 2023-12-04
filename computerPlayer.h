@@ -8,6 +8,7 @@ public:
     ComputerPlayer(ChessColour colour, int level);
     ComputerPlayer(const ComputerPlayer &other) = delete;
     ComputerPlayer &operator=(const ComputerPlayer &other) = delete;
+    bool isHuman() override;
     ~ComputerPlayer() = default;
 };
 

@@ -9,6 +9,7 @@ class Player {
 public:
     Player(ChessColour colour);
     virtual ~Player() = 0;
+    virtual bool isHuman() = 0;
 };
 
 #endif

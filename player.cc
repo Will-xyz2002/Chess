@@ -4,6 +4,5 @@ using namespace std;
 
 Player::Player(ChessColour colour): colour{colour} {}
 
-Player::~Player(){
-}
+Player::~Player(){}
 
