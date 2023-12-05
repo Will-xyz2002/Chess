@@ -524,6 +524,7 @@ vector<ChessMove> ChessBoard::PossibleMoveGenerator(ChessColour colour){
 }
 
 bool ChessBoard::isCapturing(ChessMove move){
+    // assuming that the move is already valid in terms of movement, path, and does not check current king
     ChessPiece attacking_piece = move.getInitial();
     ChessPiece under_attack_piece = move.getDest();
     if (attacking_piece.getColour() == ChessColour::White) {
@@ -535,15 +536,11 @@ bool ChessBoard::isCapturing(ChessMove move){
 }
 
 bool ChessBoard::isChecking(ChessMove move){
+    // assuming that the move is already valid in terms of movement and path, and does not check the king
     ChessBoard temp = *this;
     temp.chessMove(move.getInitial().getCoords(), move.getDest().getCoords());
-    ChessColour opponent;
-    if (move.getInitial().getColour() == ChessColour::White){
-        opponent = ChessColour::Black;
-    }
-    else {
-        opponent = ChessColour::White;
-    }
+    ChessColour player = move.getInitial().getColour();
+    ChessColour opponent = (player == ChessColour::White) ? ChessColour::Black : ChessColour::White;
     return temp.kingIsUnderAttack(opponent);
 }
 
