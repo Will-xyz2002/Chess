@@ -234,13 +234,18 @@ void ChessGame::movePiece(ChessSquare source, ChessSquare destination) {
     if (targetPiece.getCoords().getRow() == 0 && 
         targetPiece.getColour() == ChessColour::White &&
         targetPiece.getType() == ChessType::Pawn) {
-        board.pawnPromotion(targetPiece.getCoords().getRow(), targetPiece.getCoords().getColumn(), ChessColour::White);
+        
+        board.pawnPromotion(targetPiece.getCoords().getRow(), targetPiece.getCoords().getColumn(), 
+                            ChessColour::White, whitePlayer->isHuman());
+        
     }
 
     else if (targetPiece.getCoords().getRow() == 7 && 
         targetPiece.getColour() == ChessColour::Black &&
         targetPiece.getType() == ChessType::Pawn) {
-        board.pawnPromotion(targetPiece.getCoords().getRow(), targetPiece.getCoords().getColumn(), ChessColour::Black);
+
+        board.pawnPromotion(targetPiece.getCoords().getRow(), targetPiece.getCoords().getColumn(), ChessColour::Black,
+                            blackPlayer->isHuman());
     }
 }
 

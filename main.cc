@@ -2,6 +2,7 @@
 #include "chessBoard.h"
 #include "humanPlayer.h"
 #include "computerPlayer.h"
+#include "graphicsdisplay.h"
 #include "scoreBoard.h"
 #include "window.h"
 #include <iostream>
@@ -89,7 +90,6 @@ int main(void) {
                 }
                 if (game->currentPlayerIsComputer()) {
                     game->makeAMove();
-
                 }
                 else {
                     string initial;
@@ -131,26 +131,40 @@ int main(void) {
                 }
                 break;
             }
+            case Command::RESET:{ // reset the scoreboard
+                cout << "Resetting the Score Board..." << endl;
+                score->reset();
+                score->printScore();
+            }
+            case Command::SCORE: { // let the player know the current score
+                cout << "Printing out the current score..." << endl;
+                score->printScore();
+            }
             case Command::SETUP: { // setting up the board
+                ChessBoard temp = board;
+                std::unique_ptr<GraphicsDisplay> graphicsDisplay = std::make_unique<GraphicsDisplay>(BOARD_DIMENSION);
+                graphicsDisplay->setBoard(temp);
+                temp.attach(graphicsDisplay.get()); 
+                graphicsDisplay->drawGrid(); 
                 setup = true;
                 bool setUpComplete = false;
                 cout << "Currently on setup mode" << endl;
-                cout << board;
+                cout << temp;
                 while (cin >> command) {
                     switch (convertCommand(command)) {
                         case Command::ADD_PIECE: { // add a piece to the board
                             char pieceType;
                             string position;
                             if (cin >> pieceType && cin >> position) {
-                                board.addPiece(pieceType, position);
-                                cout << board;
+                                temp.addPiece(pieceType, position);
+                                cout << temp;
                             }
                             break;
                         }
                         case Command::REMOVE_PIECE: { // remove a piece from the board
                             string position;
-                            if (cin >> position) board.removePiece(position);
-                            cout << board;
+                            if (cin >> position) temp.removePiece(position);
+                            cout << temp;
                             break;
                         }
                         case Command::CHANGE_PLAYER: { // change player
@@ -162,7 +176,8 @@ int main(void) {
                             break;
                         }
                         case Command::DONE: { // leave setup mode
-                            if (board.isValidBoard()) {
+                            if (temp.isValidBoard()) {
+                                board = temp;
                                 setUpComplete = true;
                                 break;
                             } else {
@@ -177,15 +192,6 @@ int main(void) {
                     }
                     if (setUpComplete) break;
                 }
-            }
-            case Command::RESET:{ // reset the scoreboard
-                cout << "Resetting the Score Board..." << endl;
-                score->reset();
-                score->printScore();
-            }
-            case Command::SCORE: { // let the player know the current score
-                cout << "Printing out the current score..." << endl;
-                score->printScore();
             }
             default: {
                 break;

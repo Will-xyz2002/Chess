@@ -53,11 +53,20 @@ ChessBoard::ChessBoard() {
 // COPY CONSTRUCTOR
 ChessBoard::ChessBoard(const ChessBoard &other) {
     board = other.board;
-    whiteKing = other.whiteKing;
-    blackKing = other.blackKing;
+    whiteKing = other.whiteKing ? &board[other.whiteKing->getCoords().getRow()][other.whiteKing->getCoords().getColumn()] : nullptr;
+    blackKing = other.blackKing ? &board[other.blackKing->getCoords().getRow()][other.blackKing->getCoords().getColumn()] : nullptr;
     // observers is not copied - only one board (the board use in chessGame) can have observers
 }
-    
+
+ChessBoard &ChessBoard::operator=(const ChessBoard &other) {
+    if (this == &other) return *this;
+    board = other.board;
+    whiteKing = other.whiteKing ? &board[other.whiteKing->getCoords().getRow()][other.whiteKing->getCoords().getColumn()] : nullptr;
+    blackKing = other.blackKing ? &board[other.blackKing->getCoords().getRow()][other.blackKing->getCoords().getColumn()] : nullptr;
+    return *this;
+}
+
+
 ChessPiece ChessBoard::getPiece(int row, int column) { return board[row][column]; }
 
 // initialize the board
@@ -591,7 +600,12 @@ bool ChessBoard::validMoveExist(ChessSquare piece) {
     return false;
 }
 
-void ChessBoard::pawnPromotion(int row, int column, ChessColour colour) {
+void ChessBoard::pawnPromotion(int row, int column, ChessColour colour, bool isHuman) {
+    if (!isHuman) {
+        board[row][column] = Queen{colour, {row, column}};
+        notifyObservers(board[row][column]);
+        return;
+    }
     char pieceType;
     do {
         cin >> pieceType;

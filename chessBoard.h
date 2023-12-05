@@ -29,6 +29,7 @@ class ChessBoard {
 public:
     ChessBoard();
     ChessBoard(const ChessBoard &other);
+    ChessBoard &operator=(const ChessBoard &other);
     
     ChessPiece getPiece(int row, int column);
     
@@ -36,20 +37,21 @@ public:
     void addPiece(char pieceType, std::string position);                                // add piece to the board
     void addPiece(ChessPiece &piece);                                                   // add piece to the board (using piece instead of input)
     void removePiece(std::string position);                                             // remove piece from the board (if not Empty)
+
+
     bool kingIsUnderAttack(ChessColour colour);                                         // return whether a white/black king is in check
     bool isValidMove(ChessSquare &initial, ChessSquare &dest, ChessColour turn);        // determine whether a move is valid (movement)
     bool isValidPath(ChessSquare &initial, ChessSquare &dest);                          // determine whether a move is valid (no obstacle)
     bool isCastlingPossible(ChessSquare &initial, ChessSquare &dest, ChessColour turn); // check whether the castling move can be achieved
-    bool isEnPassantPossible(ChessSquare &initial, ChessSquare &dest, ChessColour turn, 
-                             ChessMove &lastMove);                                      // check whether the en passant move can be achieved
+    bool isEnPassantPossible(ChessSquare &initial, ChessSquare &dest, 
+                             ChessColour turn, ChessMove &lastMove); // check whether the en passant move can be achieved
     void chessMove(ChessSquare initial, ChessSquare dest);                              // make a standard move
-    // void chessMoveCastling(ChessSquare king, ChessSquare rook);                      // make a castling move
     bool isValidBoard();                                                                // return whether the setup board is valid
     void emptyBoard();                                                                  // make the board empty (all Empty pieces)
     bool validMoveExist(ChessColour colour);                                            // return true whenever there are any 
                                                                                         // existing move available in colour side
     
-    void pawnPromotion(int row, int column, ChessColour colour);                        // promote pawn
+    void pawnPromotion(int row, int column, ChessColour colour, bool isHuman);           // promote pawn
     bool pawnCapturingMove(ChessSquare &initial, ChessSquare &dest);
     void attach(Observer *o);
     void notifyObservers(ChessPiece &piece);
