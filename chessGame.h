@@ -29,7 +29,7 @@ public:
     bool isStalemated();
     bool gameWon();
     void makeAMove(std::string initial, std::string dest); // for human player
-    void makeAMove();                                      // for computer player
+    void makeAMove(ChessMove move);                                      // for computer player
     void undo();
     void resign();
     vector<ChessMove> getAllMoves();

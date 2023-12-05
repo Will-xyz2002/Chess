@@ -536,12 +536,13 @@ bool ChessBoard::isChecking(ChessMove move){
     ChessPiece under_attack_piece = move.getDest();
     ChessSquare attacking_square = attacking_piece.getCoords();
     ChessSquare under_attack_square = under_attack_piece.getCoords();
+    ChessColour opponent = ChessColour::Nocolour;
     temp.chessMove(attacking_square, under_attack_square);
     if (attacking_piece.getColour() == ChessColour::White){
-        ChessColour opponent = ChessColour::Black;
+        opponent = ChessColour::Black;
     }
     else{
-        ChessColour opponent = ChessColour::White;
+        opponent = ChessColour::White;
     }
     return temp.kingIsUnderAttack(opponent);
 }
