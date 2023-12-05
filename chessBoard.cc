@@ -524,6 +524,28 @@ vector<ChessMove> ChessBoard::PossibleMoveGenerator(ChessColour colour){
     return result;
 }
 
+bool ChessBoard::isCapturing(ChessMove move){
+    ChessPiece attacking_piece = move.getInitial();
+    ChessPiece under_attack_piece = move.getDest();
+    return (attacking_piece.getColour() != under_attack_piece.getColour());
+}
+
+bool ChessBoard::isChecking(ChessMove move){
+    ChessBoard temp = *this;
+    ChessPiece attacking_piece = move.getInitial();
+    ChessPiece under_attack_piece = move.getDest();
+    ChessSquare attacking_square = attacking_piece.getCoords();
+    ChessSquare under_attack_square = under_attack_piece.getCoords();
+    temp.chessMove(attacking_square, under_attack_square);
+    if (attacking_piece.getColour() == ChessColour::White){
+        ChessColour opponent = ChessColour::Black;
+    }
+    else{
+        ChessColour opponent = ChessColour::White;
+    }
+    return temp.kingIsUnderAttack(opponent);
+}
+
 // -------------------------------
 // PRIVATE METHODS
 // -------------------------------
