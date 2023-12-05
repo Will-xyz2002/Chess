@@ -492,18 +492,21 @@ vector<ChessMove> ChessBoard::PossibleMoveGenerator(ChessColour colour){
     std::vector<ChessPiece> allColourPieces;
     std::vector<ChessPiece> allMovablePieces;
     std::vector<ChessMove> allPossibleMoves;
+
+    // first, get all the piece that have the colour of the player
     for (int r = 0; r < BOARD_DIMENSION; ++r) {
         for (int c = 0; c < BOARD_DIMENSION; ++c) {
             if (board[r][c].getColour() == colour) allColourPieces.emplace_back(board[r][c]);
         }
     }
 
-    // if at least one piece has a validMove (valid movement by rule, no obstacle, king is not in check), return true
+    // now, get all the pieces that have a valid move (validMoveExist)
     int length = allColourPieces.size();
     for (int i = 0; i < length; i++) {
         if (validMoveExist(allColourPieces[i].getCoords())) allMovablePieces.emplace_back(allColourPieces[i]);
     }
 
+    // from the list of pieces that have valid move, get all possible moves from these pieces
     int numberOfPieces = allMovablePieces.size();
     for (int i = 0; i < numberOfPieces; ++i) {
         ChessSquare initial = allMovablePieces[i].getCoords();
