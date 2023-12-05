@@ -140,12 +140,10 @@ void ChessGame::makeAMove(std::string initial, std::string dest) {
 
 
 // for computer player only
-/*void ChessGame::makeAMove() {
-    if (whiteTurn) whitePlayer->makeAMove();
-    else blackPlayer->makeAMove();
-    nextTurn();
+void ChessGame::makeAMove(ChessMove move) {
+    movePiece(move.getInitial().getCoords(), move.getDest().getCoords());
 }
-*/
+
 
 
 void ChessGame::undo() {
@@ -231,4 +229,39 @@ void ChessGame::movePiece(ChessSquare source, ChessSquare destination) {
         targetPiece.getType() == ChessType::Pawn) {
         board.pawnPromotion(targetPiece.getCoords().getRow(), targetPiece.getCoords().getColumn(), ChessColour::Black);
     }
+}
+
+vector<ChessMove> ChessGame::getAllMoves(){
+    vector<ChessMove> result;
+    if(whiteTurn){
+        result = board.PossibleMoveGenerator(ChessColour::White);
+    }
+    else{
+        result = board.PossibleMoveGenerator(ChessColour::Black);
+    }
+    return result;
+}
+
+vector<ChessMove> ChessGame::getCaptureMoves(){
+    vector<ChessMove> container;
+    vector<ChessMove> result;
+    container = getAllMoves();
+    for (auto &m : container){
+        if (board.isCapturing(m)){
+            result.emplace_back(m);
+        }
+    }
+    return result;
+}
+
+vector<ChessMove> ChessGame::getCheckMoves(){
+    vector<ChessMove> container;
+    vector<ChessMove> result;
+    container = getAllMoves();
+    for (auto &m : container){
+        if (board.isChecking(m)){
+            result.emplace_back(m);
+        }
+    }
+    return result;
 }

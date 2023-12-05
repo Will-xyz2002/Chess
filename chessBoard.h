@@ -53,6 +53,9 @@ public:
     bool pawnCapturingMove(ChessSquare &initial, ChessSquare &dest);
     void attach(Observer *o);
     void notifyObservers(ChessPiece &piece);
+    vector<ChessMove> PossibleMoveGenerator(ChessColour colour); // return a vector of chessmove which are all possible moves of the given colour
+    bool isCapturing(ChessMove move);
+    bool isChecking(ChessMove move);
     friend std::ostream &operator<<(ostream &out, ChessBoard &b);
 };
 #endif
