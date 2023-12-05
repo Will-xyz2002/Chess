@@ -127,6 +127,9 @@ int main(void) {
                         score->white_won();
                     }
                     game->resign();
+                    board.emptyBoard();
+                    isWhiteTurn = true;
+                    setup = false;
                     gameIsOn = false;
                 }
                 break;
