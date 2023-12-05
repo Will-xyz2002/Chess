@@ -32,6 +32,9 @@ public:
     void makeAMove();                                      // for computer player
     void undo();
     void resign();
+    vector<ChessMove> getAllMoves();
+    vector<ChessMove> getCaptureMoves();
+    vector<ChessMove> getCheckMoves();
 };
 
 #endif
