@@ -8,6 +8,7 @@ bool ComputerPlayer::isHuman(){
 }
 
 ChessMove ComputerPlayer::generateMove(ChessBoard &board) {
+    srand(time(NULL));
     std::vector<ChessMove> allPossibleMoves = board.PossibleMoveGenerator(getColour());
     std::vector<ChessPiece> alldangeroursPiece = board.getUnderAttackPieces(getColour());
     std::vector<ChessMove> allCapturingMoves;
@@ -46,7 +47,7 @@ ChessMove ComputerPlayer::generateMove(ChessBoard &board) {
         }
         // danger_length is not zero
         int under_attack_index = rand() % danger_length;
-        avoidingMove = board.avoid_attack_generator(alldangeroursPiece[under_attack_index]);
+        avoidingMove = board.avoidAttackGenerator(alldangeroursPiece[under_attack_index]);
         std::copy(allCapturingMoves.begin(), allCapturingMoves.end(), std::back_inserter(avoidingMove));
         // now the avoidingmoves has all the avoiding move and capturing move
         int final_index = rand() % avoidingMove.size();

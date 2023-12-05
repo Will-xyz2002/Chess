@@ -62,6 +62,6 @@ public:
     bool isCapturing(ChessMove move);
     bool isChecking(ChessMove move);
     vector<ChessPiece> getUnderAttackPieces(ChessColour colour);
-    vector<ChessMove> avoid_attack_generator(ChessPiece p);
+    vector<ChessMove> avoidAttackGenerator(ChessPiece p);
 };
 #endif

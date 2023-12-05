@@ -581,7 +581,7 @@ vector<ChessPiece> ChessBoard::getUnderAttackPieces(ChessColour colour){
 
 // get a vector of possible chessmove for single underattack piece that avoiding a capture
 // this version of move doesn't guarantee that after moving is not under attack, just do a valid move if it's under attack
-vector<ChessMove> ChessBoard::avoid_attack_generator(ChessPiece p){
+vector<ChessMove> ChessBoard::avoidAttackGenerator(ChessPiece p){
     vector <ChessMove>result;
     ChessSquare initial = p.getCoords();
     for (int r = 0; r < BOARD_DIMENSION; ++r) {
