@@ -61,5 +61,7 @@ public:
     vector<ChessMove> PossibleMoveGenerator(ChessColour colour); // return a vector of chessmove which are all possible moves of the given colour
     bool isCapturing(ChessMove move);
     bool isChecking(ChessMove move);
+    vector<ChessPiece> getUnderAttackPieces(ChessColour colour);
+    vector<ChessMove> avoid_attack_generator(ChessPiece p);
 };
 #endif
