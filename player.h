@@ -4,6 +4,8 @@
 #include "chessPiece.h"
 #include "chessMove.h"
 #include "chessBoard.h"
+#include <algorithm>  // For std::copy
+#include <iterator> 
 
 class Player {
     ChessColour colour;

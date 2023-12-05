@@ -535,6 +535,71 @@ vector<ChessMove> ChessBoard::PossibleMoveGenerator(ChessColour colour){
     return allPossibleMoves;
 }
 
+// return a vector of Chesspiece of colour that under attack by the opponent
+// this function can only avoid attack if it's our turn (colour turn)
+vector<ChessPiece> ChessBoard::getUnderAttackPieces(ChessColour colour){
+    vector<ChessPiece> result;
+    vector<ChessPiece> pieceofColour;
+    vector<ChessPiece> pieceofOpponent;
+    ChessColour opponent = ChessColour::White; //will be updated later
+    if (colour == ChessColour::White){
+        opponent = ChessColour::Black;
+    }
+    // get the pieces of the given colour
+    for (int r = 0; r < BOARD_DIMENSION; ++r){
+        for (int c = 0; c < BOARD_DIMENSION; ++c){
+            if (board[r][c].getColour() == colour){
+                pieceofColour.emplace_back(board[r][c]);
+            }
+        }
+    }
+    // get the pieces of opponents
+    for (int r = 0; r < BOARD_DIMENSION; ++r){
+        for (int c = 0; c < BOARD_DIMENSION; ++c){
+            if (board[r][c].getColour() == opponent){
+                pieceofOpponent.emplace_back(board[r][c]);
+            }
+        }
+    }
+    int length = pieceofColour.size();
+    int oppoLength = pieceofOpponent.size();
+    for (int i = 0; i < length; ++i){
+        if (validMoveExist(pieceofColour[i].getCoords())){
+            for (int j = 0; j < oppoLength; ++j){
+                ChessSquare target = pieceofColour[i].getCoords();
+                ChessSquare oppo = pieceofOpponent[j].getCoords();
+                if (isUnderAttack(target, oppo)){
+                    // now the piece on pieceofColour[i] is underattack by the pieceofOpponent[j]
+                    result.emplace_back(pieceofColour[i]);
+                }
+            }
+        }
+    }
+    return result;
+
+}
+
+// get a vector of possible chessmove for single underattack piece that avoiding a capture
+// this version of move doesn't guarantee that after moving is not under attack, just do a valid move if it's under attack
+vector<ChessMove> ChessBoard::avoid_attack_generator(ChessPiece p){
+    vector <ChessMove>result;
+    ChessSquare initial = p.getCoords();
+    for (int r = 0; r < BOARD_DIMENSION; ++r) {
+        for (int c = 0; c < BOARD_DIMENSION; ++c) {
+            ChessSquare dest = board[r][c].getCoords();
+            if (isValidMove(initial, dest, p.getColour()) && isValidPath(initial, dest)) {
+                ChessBoard temp = *this;
+                temp.chessMove(initial, dest);
+                if (!temp.kingIsUnderAttack(p.getColour())) {
+                    ChessMove temp {p, board[r][c]};
+                    result.emplace_back(temp);
+                }
+            }
+        }
+    }
+    return result;
+}
+
 bool ChessBoard::isCapturing(ChessMove move){
     // assuming that the move is already valid in terms of movement, path, and does not check current king
     ChessPiece attacking_piece = move.getInitial();
@@ -555,6 +620,7 @@ bool ChessBoard::isChecking(ChessMove move){
     ChessColour opponent = (player == ChessColour::White) ? ChessColour::Black : ChessColour::White;
     return temp.kingIsUnderAttack(opponent);
 }
+
 
 // -------------------------------
 // PRIVATE METHODS
