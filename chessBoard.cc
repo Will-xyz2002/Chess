@@ -488,7 +488,41 @@ std::ostream &operator<<(ostream &out, ChessBoard &b) {
     return out;
 }
 
-
+vector<ChessMove> ChessBoard::PossibleMoveGenerator(ChessColour colour){
+    vector<ChessMove> result;
+    bool validpath = false;
+    bool validmove = false;
+    for (auto &row : board){
+        for (auto &p : row){
+            if (p.getColour() != colour){
+                continue;
+            }
+            else if (p.getType() == ChessType::Empty){
+                continue;
+            }
+            else{
+                // now the chesspiece is what we care now
+                ChessSquare initial = p.getCoords();
+                int r = initial.getRow();
+                int c = initial.getColumn();
+                for (int m = 0; m < BOARD_DIMENSION; ++m){
+                    for (int n = 0; n < BOARD_DIMENSION; ++n){
+                        ChessSquare end {m, n};
+                        validpath = isValidPath(initial, end);
+                        validmove = isValidMove(initial, end, colour);
+                        if (validpath && validmove){
+                            ChessPiece init_piece = board[r][c];
+                            ChessPiece end_piece = board[m][n];
+                            ChessMove temp {init_piece, end_piece};
+                            result.emplace_back(temp);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return result;
+}
 
 // -------------------------------
 // PRIVATE METHODS
