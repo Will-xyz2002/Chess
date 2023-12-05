@@ -1,5 +1,6 @@
 #include "computerPlayer.h"
 #include <cstdlib> 
+#include <ctime>
 
 ComputerPlayer::ComputerPlayer(ChessColour colour, int level): Player{colour}, level{level} { }
 
