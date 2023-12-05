@@ -6,3 +6,4 @@ bool HumanPlayer::isHuman(){
     return true;
 }
 
+ChessMove HumanPlayer::generateMove(vector<ChessMove> pool) { }
