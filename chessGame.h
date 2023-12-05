@@ -27,14 +27,12 @@ public:
     ChessGame(ChessBoard board, bool whiteTurn, std::shared_ptr<Player> whitePlayer, std::shared_ptr<Player> blackPlayer);
     bool isWhiteTurn();
     bool isStalemated();
+    bool currentPlayerIsComputer();
     bool gameWon();
     void makeAMove(std::string initial, std::string dest); // for human player
-    void makeAMove(ChessMove move);                                      // for computer player
+    void makeAMove();                        // for computer player
     void undo();
     void resign();
-    vector<ChessMove> getAllMoves();
-    vector<ChessMove> getCaptureMoves();
-    vector<ChessMove> getCheckMoves();
 };
 
 #endif

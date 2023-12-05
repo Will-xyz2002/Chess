@@ -10,7 +10,7 @@ public:
     ComputerPlayer(const ComputerPlayer &other) = delete;
     ComputerPlayer &operator=(const ComputerPlayer &other) = delete;
     bool isHuman() override;
-    ChessMove generateMove(vector<ChessMove> pool) override;
+    ChessMove generateMove(ChessBoard &board) override;
     ~ComputerPlayer() = default;
 };
 

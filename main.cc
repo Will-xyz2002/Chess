@@ -87,10 +87,16 @@ int main(void) {
                     cout << "No game exist. Please try again" << endl;
                     break;
                 }
-                string initial;
-                string dest;
-                if (cin >> initial && cin >> dest) {
-                    game->makeAMove(initial, dest);
+                if (game->currentPlayerIsComputer()) {
+                    game->makeAMove();
+
+                }
+                else {
+                    string initial;
+                    string dest;
+                    if (cin >> initial && cin >> dest) {
+                        game->makeAMove(initial, dest);
+                    }
                 }
                 if (game->gameWon()) {
                     if(game->isStalemated()){

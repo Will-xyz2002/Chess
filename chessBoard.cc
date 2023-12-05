@@ -489,59 +489,59 @@ std::ostream &operator<<(ostream &out, ChessBoard &b) {
 }
 
 vector<ChessMove> ChessBoard::PossibleMoveGenerator(ChessColour colour){
-    vector<ChessMove> result;
-    bool validpath = false;
-    bool validmove = false;
-    for (auto &row : board){
-        for (auto &p : row){
-            if (p.getColour() != colour){
-                continue;
-            }
-            else if (p.getType() == ChessType::Empty){
-                continue;
-            }
-            else{
-                // now the chesspiece is what we care now
-                ChessSquare initial = p.getCoords();
-                int r = initial.getRow();
-                int c = initial.getColumn();
-                for (int m = 0; m < BOARD_DIMENSION; ++m){
-                    for (int n = 0; n < BOARD_DIMENSION; ++n){
-                        ChessSquare end {m, n};
-                        validpath = isValidPath(initial, end);
-                        validmove = isValidMove(initial, end, colour);
-                        if (validpath && validmove){
-                            ChessPiece init_piece = board[r][c];
-                            ChessPiece end_piece = board[m][n];
-                            ChessMove temp {init_piece, end_piece};
-                            result.emplace_back(temp);
-                        }
+    std::vector<ChessPiece> allColourPieces;
+    std::vector<ChessPiece> allMovablePieces;
+    std::vector<ChessMove> allPossibleMoves;
+    for (int r = 0; r < BOARD_DIMENSION; ++r) {
+        for (int c = 0; c < BOARD_DIMENSION; ++c) {
+            if (board[r][c].getColour() == colour) allColourPieces.emplace_back(board[r][c]);
+        }
+    }
+
+    // if at least one piece has a validMove (valid movement by rule, no obstacle, king is not in check), return true
+    int length = allColourPieces.size();
+    for (int i = 0; i < length; i++) {
+        if (validMoveExist(allColourPieces[i].getCoords())) allMovablePieces.emplace_back(allColourPieces[i]);
+    }
+
+    int numberOfPieces = allMovablePieces.size();
+    for (int i = 0; i < numberOfPieces; ++i) {
+        ChessSquare initial = allMovablePieces[i].getCoords();
+        for (int r = 0; r < BOARD_DIMENSION; ++r) {
+            for (int c = 0; c < BOARD_DIMENSION; ++c) {
+                ChessSquare dest = board[r][c].getCoords();
+                if (isValidMove(initial, dest, colour) && isValidPath(initial, dest)) {
+                    ChessBoard temp = *this;
+                    temp.chessMove(initial, dest);
+                    if (!temp.kingIsUnderAttack(colour)) {
+                        allPossibleMoves.emplace_back(ChessMove{allMovablePieces[i], board[r][c]});
                     }
                 }
             }
         }
     }
-    return result;
+    return allPossibleMoves;
 }
 
 bool ChessBoard::isCapturing(ChessMove move){
     ChessPiece attacking_piece = move.getInitial();
     ChessPiece under_attack_piece = move.getDest();
-    return (attacking_piece.getColour() != under_attack_piece.getColour());
+    if (attacking_piece.getColour() == ChessColour::White) {
+        return (under_attack_piece.getColour() == ChessColour::Black);
+    }
+    else {
+        return (under_attack_piece.getColour() == ChessColour::White);
+    }
 }
 
 bool ChessBoard::isChecking(ChessMove move){
     ChessBoard temp = *this;
-    ChessPiece attacking_piece = move.getInitial();
-    ChessPiece under_attack_piece = move.getDest();
-    ChessSquare attacking_square = attacking_piece.getCoords();
-    ChessSquare under_attack_square = under_attack_piece.getCoords();
-    ChessColour opponent = ChessColour::Nocolour;
-    temp.chessMove(attacking_square, under_attack_square);
-    if (attacking_piece.getColour() == ChessColour::White){
+    temp.chessMove(move.getInitial().getCoords(), move.getDest().getCoords());
+    ChessColour opponent;
+    if (move.getInitial().getColour() == ChessColour::White){
         opponent = ChessColour::Black;
     }
-    else{
+    else {
         opponent = ChessColour::White;
     }
     return temp.kingIsUnderAttack(opponent);

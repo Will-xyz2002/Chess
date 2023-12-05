@@ -8,7 +8,7 @@ public:
     bool isHuman() override;
     HumanPlayer(const HumanPlayer &other) = delete;
     HumanPlayer &operator=(const HumanPlayer &other) = delete;
-    ChessMove generateMove(vector<ChessMove> pool) override;
+    ChessMove generateMove(ChessBoard &board) override;
     ~HumanPlayer() = default;
 };
 #endif
