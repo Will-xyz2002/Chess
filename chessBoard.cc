@@ -600,6 +600,52 @@ vector<ChessMove> ChessBoard::avoidAttackGenerator(ChessPiece p){
     return result;
 }
 
+int ChessBoard::piecePoint(ChessType type) {
+    if(type == ChessType::King) { return 50; }
+    if(type == ChessType::Queen) { return 10; }
+    if(type == ChessType::Bishop) { return 5; }
+    if(type == ChessType::Rook) { return 5; }
+    if(type == ChessType::Knight) { return 3; }
+    if(type == ChessType::Pawn) { return 1; }
+    return 0;
+}
+
+int ChessBoard::bestScore(std::vector<ChessMove> moves) {
+    int bestSoFar = 0;
+    int size = moves.size();
+    for(int i = 0; i < size; ++i) {
+        int currentPoint = 0;
+        currentPoint = piecePoint(moves[i].getDest().getType());
+        if(bestSoFar < currentPoint) {
+            bestSoFar = currentPoint;
+        }
+    }
+    return bestSoFar;
+}
+
+int ChessBoard::getplayPoint(ChessMove move) {
+    int point = 0;
+    ChessColour yourside = move.getInitial().getColour();
+    ChessColour opponent = (yourside == ChessColour::White) ? ChessColour::White : ChessColour::Black ;
+    // point get
+    if(isCapturing(move)) { point += piecePoint(move.getDest().getType()); }
+    ChessBoard temp = *this;
+    temp.chessMove(move.getInitial().getCoords(), move.getDest().getCoords());
+    // all of possible movements by opponent
+    std::vector<ChessMove> OpponentMoves =  PossibleMoveGenerator(opponent);
+    // all of possible capturing by opponent
+    std::vector<ChessMove> OpponentCapturing;
+    int OpponentChoices = OpponentMoves.size();
+    for(int i = 0; i < OpponentChoices; ++i) {
+        if (isCapturing(OpponentMoves[i])) {
+            OpponentCapturing.emplace_back(OpponentMoves[i]);
+        }
+    }
+    // best possible score by opponent
+    point -= bestScore(OpponentCapturing);
+    return point;
+}
+
 bool ChessBoard::isCapturing(ChessMove move){
     // assuming that the move is already valid in terms of movement, path, and does not check current king
     ChessPiece attacking_piece = move.getInitial();
