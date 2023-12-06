@@ -47,6 +47,10 @@ std::shared_ptr<Player> assignPlayer(string p, ChessColour colour) {
         player = std::move(make_shared<ComputerPlayer>(colour, 3));
         return player;
     }
+    else if (p == "computer[4]" || p == "c4") {
+        player = std::move(make_shared<ComputerPlayer>(colour, 3));
+        return player;
+    }
     throw std::logic_error("Cannot assign player. Please try again.");
 }
 

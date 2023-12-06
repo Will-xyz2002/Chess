@@ -54,6 +54,21 @@ ChessMove ComputerPlayer::generateMove(ChessBoard &board) {
         int final_index = rand() % avoidingMove.size();
         return avoidingMove[final_index];
     }
+    if (level == 4){
+        std::vector<ChessMove> bestMoves;
+        int bestPoint = 0;
+        for(int i = 0; i < size; ++i) {
+            if(bestPoint == board.getplayPoint(allPossibleMoves[i])) {
+                bestMoves.emplace_back(allPossibleMoves[i]);
+            } else if(bestPoint <  board.getplayPoint(allPossibleMoves[i])) {
+                bestMoves.clear();
+                bestMoves.emplace_back(allPossibleMoves[i]);
+            }
+        }
+        int numberOfBestMoves = bestMoves.size();
+        int final_index = rand() % numberOfBestMoves;
+        return bestMoves[final_index];
+    }
     int index = rand() % size;
     return allPossibleMoves[index];
 }

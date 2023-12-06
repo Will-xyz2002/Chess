@@ -63,5 +63,8 @@ public:
     bool isChecking(ChessMove move);
     vector<ChessPiece> getUnderAttackPieces(ChessColour colour);
     vector<ChessMove> avoidAttackGenerator(ChessPiece p);
+    int piecePoint(ChessType type);
+    int bestScore(vector<ChessMove> moves);
+    int getplayPoint(ChessMove move);
 };
 #endif
