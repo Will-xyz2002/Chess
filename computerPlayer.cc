@@ -56,7 +56,7 @@ ChessMove ComputerPlayer::generateMove(ChessBoard &board) {
     }
     if (level == 4){
         std::vector<ChessMove> bestMoves;
-        int bestPoint = 0;
+        int bestPoint = -20;
         for(int i = 0; i < size; ++i) {
             if(bestPoint == board.getplayPoint(allPossibleMoves[i])) {
                 bestMoves.emplace_back(allPossibleMoves[i]);
