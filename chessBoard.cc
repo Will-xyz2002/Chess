@@ -627,13 +627,46 @@ int ChessBoard::bestScore(std::vector<ChessMove> moves) {
 int ChessBoard::getplayPoint(ChessMove move) {
     int point = 0;
     ChessColour yourside = move.getInitial().getColour();
-    ChessColour opponent = (yourside == ChessColour::White) ? ChessColour::White : ChessColour::Black ;
+    ChessColour opponent = (yourside == ChessColour::White) ? ChessColour::Black : ChessColour::Black ;
     // point get
     if(isCapturing(move)) { point += piecePoint(move.getDest().getType()); }
     ChessBoard temp = *this;
     temp.chessMove(move.getInitial().getCoords(), move.getDest().getCoords());
     // all of possible movements by opponent
-    std::vector<ChessMove> OpponentMoves =  PossibleMoveGenerator(opponent);
+    std::vector<ChessMove> OpponentMoves;
+    std::vector<ChessPiece> allColourPieces;
+    std::vector<ChessPiece> allMovablePieces;
+    ChessColour colour = opponent;
+    // first, get all the piece that have the colour of the player
+    for (int r = 0; r < BOARD_DIMENSION; ++r) {
+        for (int c = 0; c < BOARD_DIMENSION; ++c) {
+            if (board[r][c].getColour() == colour) allColourPieces.emplace_back(board[r][c]);
+        }
+    }
+
+    // now, get all the pieces that have a valid move (validMoveExist)
+    int length = allColourPieces.size();
+    for (int i = 0; i < length; i++) {
+        if (validMoveExist(allColourPieces[i].getCoords())) allMovablePieces.emplace_back(allColourPieces[i]);
+    }
+
+    // from the list of pieces that have valid move, get all possible moves from these pieces
+    int numberOfPieces = allMovablePieces.size();
+    for (int i = 0; i < numberOfPieces; ++i) {
+        ChessSquare initial = allMovablePieces[i].getCoords();
+        for (int r = 0; r < BOARD_DIMENSION; ++r) {
+            for (int c = 0; c < BOARD_DIMENSION; ++c) {
+                ChessSquare dest = board[r][c].getCoords();
+                if (isValidMove(initial, dest, colour) && isValidPath(initial, dest)) {
+                    ChessBoard temp = *this;
+                    temp.chessMove(initial, dest);
+                    if (!temp.kingIsUnderAttack(colour)) {
+                        OpponentMoves.emplace_back(ChessMove{allMovablePieces[i], board[r][c]});
+                    }
+                }
+            }
+        }
+    }
     // all of possible capturing by opponent
     std::vector<ChessMove> OpponentCapturing;
     int OpponentChoices = OpponentMoves.size();
@@ -643,7 +676,8 @@ int ChessBoard::getplayPoint(ChessMove move) {
         }
     }
     // best possible score by opponent
-    point -= bestScore(OpponentCapturing);
+    int worstCase = bestScore(OpponentCapturing);
+    point -= worstCase;
     return point;
 }
 
