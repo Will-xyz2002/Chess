@@ -56,13 +56,15 @@ ChessMove ComputerPlayer::generateMove(ChessBoard &board) {
     }
     if (level == 4){
         std::vector<ChessMove> bestMoves;
-        int bestPoint = -20;
+        int bestSoFar = -20;
         for(int i = 0; i < size; ++i) {
-            if(bestPoint == board.getplayPoint(allPossibleMoves[i])) {
+            int currentPoint = board.getplayPoint(allPossibleMoves[i]);
+            if(bestSoFar == currentPoint) {
                 bestMoves.emplace_back(allPossibleMoves[i]);
-            } else if(bestPoint <  board.getplayPoint(allPossibleMoves[i])) {
+            } else if(bestSoFar <  currentPoint) {
                 bestMoves.clear();
                 bestMoves.emplace_back(allPossibleMoves[i]);
+                bestSoFar = currentPoint;
             }
         }
         int numberOfBestMoves = bestMoves.size();
