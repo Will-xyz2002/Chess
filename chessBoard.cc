@@ -601,12 +601,12 @@ vector<ChessMove> ChessBoard::avoidAttackGenerator(ChessPiece p){
 }
 
 int ChessBoard::piecePoint(ChessType type) {
-    if(type == ChessType::King) { return 50; }
-    if(type == ChessType::Queen) { return 10; }
-    if(type == ChessType::Bishop) { return 5; }
-    if(type == ChessType::Rook) { return 5; }
-    if(type == ChessType::Knight) { return 3; }
     if(type == ChessType::Pawn) { return 1; }
+    if(type == ChessType::Knight) { return 3; }
+    if(type == ChessType::Bishop) { return 3; }
+    if(type == ChessType::Rook) { return 5; }
+    if(type == ChessType::Queen) { return 9; }
+    if(type == ChessType::King) { return 50; }
     return 0;
 }
 
