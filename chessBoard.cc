@@ -607,7 +607,7 @@ int ChessBoard::piecePoint(ChessType type) {
     if(type == ChessType::Bishop) { return 3; }
     if(type == ChessType::Rook) { return 5; }
     if(type == ChessType::Queen) { return 9; }
-    if(type == ChessType::King) { return 20; }
+    if(type == ChessType::King) { return 10; }
     return 0;
 }
 
@@ -627,13 +627,13 @@ int ChessBoard::bestScore(std::vector<ChessMove> moves) {
 int ChessBoard::getplayPoint(ChessMove move) {
     int point = 0;
     ChessColour yourside = move.getInitial().getColour();
-    ChessColour opponent = (yourside == ChessColour::White) ? ChessColour::White : ChessColour::Black ;
+    ChessColour opponent = (yourside == ChessColour::White) ? ChessColour::Black : ChessColour::White ;
     // point get
     if(isCapturing(move)) { point += piecePoint(move.getDest().getType()); }
     ChessBoard temp = *this;
     temp.chessMove(move.getInitial().getCoords(), move.getDest().getCoords());
     // all of possible movements by opponent
-    std::vector<ChessMove> OpponentMoves =  PossibleMoveGenerator(opponent);
+    std::vector<ChessMove> OpponentMoves = temp.PossibleMoveGenerator(opponent);
     // all of possible capturing by opponent
     std::vector<ChessMove> OpponentCapturing;
     int OpponentChoices = OpponentMoves.size();
@@ -643,7 +643,8 @@ int ChessBoard::getplayPoint(ChessMove move) {
         }
     }
     // best possible score by opponent
-    point -= bestScore(OpponentCapturing);
+    int worstCase = bestScore(OpponentCapturing);
+    point -= worstCase;
     return point;
 }
 

@@ -57,14 +57,30 @@ ChessMove ComputerPlayer::generateMove(ChessBoard &board) {
     if (level == 4){
         std::vector<ChessMove> bestMoves;
         int bestSoFar = -20;
+        int currentPoint = -20;
         for(int i = 0; i < size; ++i) {
-            int currentPoint = board.getplayPoint(allPossibleMoves[i]);
+            currentPoint = board.getplayPoint(allPossibleMoves[i]);
             if(bestSoFar == currentPoint) {
                 bestMoves.emplace_back(allPossibleMoves[i]);
             } else if(bestSoFar <  currentPoint) {
                 bestMoves.clear();
                 bestMoves.emplace_back(allPossibleMoves[i]);
                 bestSoFar = currentPoint;
+            }
+        }
+
+        // when it does not capture and not get captured
+        // when it captures and be captured by the same piece
+        if(bestSoFar == 0) {
+            int allBestMoves = bestMoves.size();
+            std::vector<ChessMove> noCapture;
+            for(int i = 0; i < allBestMoves; ++i) {
+                if(!board.isCapturing(bestMoves[i])) {
+                    noCapture.emplace_back(bestMoves[i]);
+                }
+            }
+            if(bestMoves.size() != noCapture.size()) { 
+                bestMoves = noCapture; 
             }
         }
         int numberOfBestMoves = bestMoves.size();
